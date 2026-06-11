@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Vida — App de Vida</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f0f1a;
+    --bg2: #16213e;
+    --bg3: #1a1a2e;
+    --card: #1e1e32;
+    --card2: #252540;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #f0f0ff;
+    --text2: rgba(240,240,255,0.65);
+    --text3: rgba(240,240,255,0.35);
+    --purple: #6366f1;
+    --teal: #10b981;
+    --amber: #f59e0b;
+    --pink: #ec4899;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --r-md: 10px;
+    --r-lg: 14px;
+    --r-xl: 18px;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 480px;
+    padding: 20px 16px 100px;
+    position: relative;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    background: linear-gradient(135deg, var(--bg3) 0%, var(--bg2) 60%, #0d2a4a 100%);
+    border-radius: var(--r-xl);
+    padding: 28px 20px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    border: 0.5px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -50px; left: -50px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .hero-coins {
+    position: absolute; top: 14px; right: 14px;
+    background: rgba(245,158,11,0.15);
+    border: 0.5px solid rgba(245,158,11,0.3);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 13px; font-weight: 600; color: #f59e0b;
+    display: flex; align-items: center; gap: 5px;
+    z-index: 1;
+  }
+  .hero-coins i { font-size: 15px; }
+  .avatar-ring {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--teal));
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px; font-size: 34px;
+    animation: float 3s ease-in-out infinite;
+    position: relative; z-index: 1;
+    box-shadow: 0 0 24px rgba(99,102,241,0.4);
+  }
+  .hero-name {
+    text-align: center; font-size: 19px; font-weight: 600;
+    color: var(--text); position: relative; z-index: 1;
+    margin-bottom: 3px;
+  }
+  .hero-sub {
+    text-align: center; font-size: 12px; color: var(--text2);
+    margin-bottom: 16px; position: relative; z-index: 1;
+  }
+  .xp-track {
+    background: rgba(255,255,255,0.07);
+    border-radius: 20px; height: 7px;
+    margin-bottom: 5px; position: relative; z-index: 1;
+  }
+  .xp-fill {
+    height: 100%; border-radius: 20px;
+    background: linear-gradient(90deg, var(--purple), var(--teal));
+    width: 0%; transition: width 1.2s ease;
+  }
+  .xp-label { font-size: 11px; color: var(--text3); position: relative; z-index: 1; text-align: center; }
+
+  /* ---- NAV ---- */
+  .nav {
+    display: flex; gap: 6px; margin-bottom: 20px;
+    background: var(--card); border-radius: var(--r-lg);
+    padding: 4px; border: 0.5px solid var(--border);
+  }
+  .nav-btn {
+    flex: 1; padding: 9px 4px;
+    font-size: 11px; font-weight: 500;
+    color: var(--text2);
+    background: transparent; border: none;
+    border-radius: var(--r-md); cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    transition: all 0.2s;
+  }
+  .nav-btn i { font-size: 19px; }
+  .nav-btn.active { background: var(--card2); color: var(--text); }
+  .nav-btn:hover:not(.active) { background: rgba(255,255,255,0.05); color: var(--text); }
+
+  /* ---- SCREENS ---- */
+  .screen { display: none; animation: fadeIn 0.35s ease; }
+  .screen.active { display: block; }
+
+  .sec-title {
+    font-size: 11px; font-weight: 600;
+    color: var(--text3); letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+
+  /* ---- VALUES ---- */
+  .val-card {
+    background: var(--card); border: 0.5px solid var(--border);
+    border-radius: var(--r-lg); padding: 14px 16px;
+    margin-bottom: 10px; display: flex; align-items: center;
+    gap: 14px; cursor: pointer; transition: all 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .val-card:hover { border-color: var(--border2); transform: translateX(4px); }
+  .val-card.v1 { border-left: 3px solid var(--purple); }
+  .val-card.v2 { border-left: 3px solid var(--teal); }
+  .val-card.v3 { border-left: 3px solid var(--amber); }
+  .val-icon {
+    width: 46px; height: 46px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .val-icon.v1 { background: rgba(99,102,241,0.15); }
+  .val-icon.v2 { background: rgba(16,185,129,0.15); }
+  .val-icon.v3 { background: rgba(245,158,11,0.15); }
+  .val-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .val-desc { font-size: 12px; color: var(--text2); margin-top: 3px; }
+  .val-badge {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: rgba(16,185,129,0.15); color: #10b981;
+    font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 600;
+  }
+  .val-card.activated { background: rgba(255,255,255,0.03); }
+
+  .val-hint {
+    background: rgba(255,255,255,0.03); border-radius: var(--r-md);
+    padding: 12px 14px; border: 0.5px solid var(--border);
+    font-size: 12px; color: var(--text3); line-height: 1.6; margin-top: 4px;
+  }
+
+  /* ---- SKILLS ---- */
+  .skill-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin-bottom: 14px;
+  }
+  .skill-card {
+    background: var(--card); border: 0.5px solid var(--border);
+    border-radius: var(--r-lg); padding: 14px 8px;
+    text-align: center; cursor: pointer; transition: all 0.2s;
+  }
+  .skill-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .skill-card.active-sk { border-color: var(--purple); background: rgba(99,102,241,0.08); }
+  .skill-emoji { font-size: 28px; margin-bottom: 6px; display: block; }
+  .skill-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .skill-lvl { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .skill-stars { color: var(--amber); font-size: 11px; margin-top: 3px; }
+
+  .skill-detail {
+    background: var(--card); border: 0.5px solid var(--border);
+    border-radius: var(--r-lg); padding: 14px 16px;
+    margin-bottom: 12px; display: none;
+  }
+  .skill-detail.open { display: block; animation: fadeIn 0.3s ease; }
+  .skill-detail h3 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .skill-detail p { font-size: 12px; color: var(--text2); line-height: 1.65; }
+  .sk-bar-wrap { background: rgba(255,255,255,0.07); border-radius: 20px; height: 6px; margin: 10px 0 5px; }
+  .sk-bar-fill { height: 100%; border-radius: 20px; background: var(--purple); transition: width 0.8s ease; }
+  .sk-bar-label { font-size: 11px; color: var(--text3); }
+
+  .sk-hint { font-size: 11px; color: var(--text3); padding: 2px 0; display: flex; align-items: center; gap: 4px; }
+
+  /* ---- QUESTS ---- */
+  .quest-card {
+    background: var(--card); border: 0.5px solid var(--border);
+    border-radius: var(--r-lg); padding: 14px 16px;
+    margin-bottom: 10px; display: flex; align-items: flex-start;
+    gap: 12px; transition: all 0.2s;
+  }
+  .quest-card:hover { border-color: var(--border2); }
+  .quest-card.done-card { opacity: 0.55; }
+  .q-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .q-red { background: rgba(239,68,68,0.15); }
+  .q-blue { background: rgba(59,130,246,0.15); }
+  .q-green { background: rgba(16,185,129,0.15); }
+  .q-purple { background: rgba(139,92,246,0.15); }
+  .quest-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .quest-desc { font-size: 12px; color: var(--text2); line-height: 1.55; }
+  .quest-reward { font-size: 11px; color: var(--amber); margin-top: 6px; font-weight: 600; }
+  .check-btn {
+    margin-left: auto; flex-shrink: 0;
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 1.5px solid var(--border2);
+    background: transparent; display: flex; align-items: center;
+    justify-content: center; cursor: pointer;
+    color: var(--text3); font-size: 15px;
+    transition: all 0.2s;
+  }
+  .check-btn.done-btn { background: var(--teal); border-color: var(--teal); color: white; }
+  .check-btn:hover:not(.done-btn) { border-color: var(--teal); color: var(--teal); }
+
+  /* ---- DESTINY ---- */
+  .destiny-center { text-align: center; padding: 4px 0; }
+  .dest-star { font-size: 64px; display: block; margin-bottom: 12px; animation: float 2.5s ease-in-out infinite; }
+  .dest-title { font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .dest-sub { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 20px; }
+  .dest-steps { display: flex; flex-direction: column; gap: 10px; text-align: left; margin-bottom: 20px; }
+  .dest-step {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--card); border: 0.5px solid var(--border);
+    border-radius: var(--r-lg); padding: 12px 14px;
+    transition: all 0.2s;
+  }
+  .dest-step:hover { border-color: var(--border2); }
+  .step-num {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--purple), #8b5cf6);
+    color: white; font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .step-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .dest-quote {
+    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(16,185,129,0.07));
+    border: 0.5px solid var(--border);
+    border-radius: var(--r-lg); padding: 16px;
+    font-size: 13px; color: var(--text2);
+    font-style: italic; line-height: 1.7; text-align: left;
+  }
+
+  /* ---- TOAST ---- */
+  #toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    background: #2a2a4a; color: var(--text);
+    border: 0.5px solid var(--border2);
+    padding: 10px 18px; border-radius: 20px;
+    font-size: 13px; white-space: nowrap;
+    opacity: 0; transition: opacity 0.3s;
+    z-index: 999; pointer-events: none;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  #toast.show { opacity: 1; }
+
+  /* ---- ANIMATIONS ---- */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-coins">
+      <i class="ti ti-coin"></i>
+      <span id="coins">340</span> XP
+    </div>
+    <div class="avatar-ring">🧑‍🔧</div>
+    <div class="hero-name">El Protagonista</div>
+    <div class="hero-sub">Futuro Mecánico de Fórmula 1 · Nivel 7</div>
+    <div class="xp-track"><div class="xp-fill" id="xpBar"></div></div>
+    <div class="xp-label">340 / 500 XP para nivel 8</div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showTab('valores')">
+      <i class="ti ti-shield-check"></i>Valores
+    </button>
+    <button class="nav-btn" onclick="showTab('habilidades')">
+      <i class="ti ti-bolt"></i>Skills
+    </button>
+    <button class="nav-btn" onclick="showTab('metas')">
+      <i class="ti ti-target"></i>Metas
+    </button>
+    <button class="nav-btn" onclick="showTab('destino')">
+      <i class="ti ti-star"></i>Destino
+    </button>
+  </nav>
+
+  <!-- VALORES -->
+  <div id="valores" class="screen active">
+    <div class="sec-title">Mis valores fundamentales</div>
+
+    <div class="val-card v1" onclick="activateValue(this, 50, '¡Honestidad activada! +50 XP')">
+      <div class="val-icon v1">💎</div>
+      <div>
+        <div class="val-name">Honestidad</div>
+        <div class="val-desc">La verdad como escudo y como espada</div>
+      </div>
+      <span class="val-badge">Equipado</span>
+    </div>
+
+    <div class="val-card v2" onclick="activateValue(this, 60, '¡Creatividad activada! +60 XP')">
+      <div class="val-icon v2">🎨</div>
+      <div>
+        <div class="val-name">Creatividad</div>
+        <div class="val-desc">Imaginar soluciones donde otros ven límites</div>
+      </div>
+      <span class="val-badge">Equipado</span>
+    </div>
+
+    <div class="val-card v3" onclick="activateValue(this, 55, '¡Lealtad activada! +55 XP')">
+      <div class="val-icon v3">🔰</div>
+      <div>
+        <div class="val-name">Lealtad</div>
+        <div class="val-desc">El lazo que no se rompe con el tiempo</div>
+      </div>
+      <span class="val-badge">Equipado</span>
+    </div>
+
+    <div class="val-hint">
+      <i class="ti ti-info-circle" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>
+      Los valores son tu armadura. Toca cada uno para activarlo y ganar XP de vida.
+    </div>
+  </div>
+
+  <!-- HABILIDADES -->
+  <div id="habilidades" class="screen">
+    <div class="sec-title">Árbol de habilidades</div>
+    <div class="skill-grid">
+      <div class="skill-card" onclick="toggleSkill('prog', this)">
+        <span class="skill-emoji">💻</span>
+        <div class="skill-name">Programación</div>
+        <div class="skill-lvl">Nivel 6</div>
+        <div class="skill-stars">★★★★★☆</div>
+      </div>
+      <div class="skill-card" onclick="toggleSkill('mus', this)">
+        <span class="skill-emoji">🎵</span>
+        <div class="skill-name">Música</div>
+        <div class="skill-lvl">Nivel 5</div>
+        <div class="skill-stars">★★★★☆☆</div>
+      </div>
+      <div class="skill-card" onclick="toggleSkill('games', this)">
+        <span class="skill-emoji">🎮</span>
+        <div class="skill-name">Videojuegos</div>
+        <div class="skill-lvl">Nivel 7</div>
+        <div class="skill-stars">★★★★★★</div>
+      </div>
+    </div>
+
+    <div class="skill-detail" id="detail-prog">
+      <h3>💻 Programación</h3>
+      <p>Tu habilidad técnica es la base de todo. Cada línea de código es un ladrillo en el camino hacia la F1 — los sistemas de telemetría, análisis de datos y software de ingeniería te van a necesitar.</p>
+      <div class="sk-bar-wrap"><div class="sk-bar-fill" style="width:72%"></div></div>
+      <div class="sk-bar-label">720 / 1000 XP</div>
+    </div>
+    <div class="skill-detail" id="detail-mus">
+      <h3>🎵 Música</h3>
+      <p>La música entrena tu oído para detectar patrones, ritmo y armonía. En mecánica de F1, escuchar el motor es una habilidad crítica. Tu creatividad musical te da un oído diferente al resto del equipo.</p>
+      <div class="sk-bar-wrap"><div class="sk-bar-fill" style="width:55%"></div></div>
+      <div class="sk-bar-label">550 / 1000 XP</div>
+    </div>
+    <div class="skill-detail" id="detail-games">
+      <h3>🎮 Videojuegos</h3>
+      <p>Los reflejos, el pensamiento estratégico bajo presión y el análisis rápido de situaciones vienen directamente de aquí. Muchos simuladores de F1 son usados por equipos reales para entrenar.</p>
+      <div class="sk-bar-wrap"><div class="sk-bar-fill" style="width:88%"></div></div>
+      <div class="sk-bar-label">880 / 1000 XP</div>
+    </div>
+
+    <div class="sk-hint"><i class="ti ti-hand-click" style="font-size:13px"></i> Toca una habilidad para ver su detalle</div>
+  </div>
+
+  <!-- METAS -->
+  <div id="metas" class="screen">
+    <div class="sec-title">Misiones activas</div>
+
+    <div class="quest-card" id="q1">
+      <div class="q-icon q-red">🏎️</div>
+      <div style="flex:1">
+        <div class="quest-title">Mecánico de Fórmula 1</div>
+        <div class="quest-desc">Llegar a trabajar en el pit lane de un equipo de F1. La meta que define el camino.</div>
+        <div class="quest-reward">⚡ Misión principal · Recompensa: Legado</div>
+      </div>
+      <button class="check-btn" onclick="completeQuest('q1', 100)"><i class="ti ti-check"></i></button>
+    </div>
+
+    <div class="quest-card" id="q2">
+      <div class="q-icon q-blue">🎓</div>
+      <div style="flex:1">
+        <div class="quest-title">Formación técnica automotriz</div>
+        <div class="quest-desc">Estudiar mecánica y electrónica. Combinar con programación para análisis de datos de carrera.</div>
+        <div class="quest-reward">⚡ Sub-misión · +80 XP al completar</div>
+      </div>
+      <button class="check-btn" onclick="completeQuest('q2', 80)"><i class="ti ti-check"></i></button>
+    </div>
+
+    <div class="quest-card" id="q3">
+      <div class="q-icon q-green">🌍</div>
+      <div style="flex:1">
+        <div class="quest-title">Conectar con la comunidad F1</div>
+        <div class="quest-desc">Redes, eventos, simuladores y contactos del mundo del automovilismo.</div>
+        <div class="quest-reward">⚡ Sub-misión · +60 XP al completar</div>
+      </div>
+      <button class="check-btn" onclick="completeQuest('q3', 60)"><i class="ti ti-check"></i></button>
+    </div>
+
+    <div class="quest-card" id="q4">
+      <div class="q-icon q-purple">🏆</div>
+      <div style="flex:1">
+        <div class="quest-title">Primer trabajo en automovilismo</div>
+        <div class="quest-desc">Karting, Fórmula 4 o cualquier serie. El primer paso siempre es el más importante.</div>
+        <div class="quest-reward">⚡ Sub-misión · +70 XP al completar</div>
+      </div>
+      <button class="check-btn" onclick="completeQuest('q4', 70)"><i class="ti ti-check"></i></button>
+    </div>
+  </div>
+
+  <!-- DESTINO -->
+  <div id="destino" class="screen">
+    <div class="destiny-center">
+      <span class="dest-star">🌟</span>
+      <div class="dest-title">Dejar una huella en tu familia</div>
+      <div class="dest-sub">No se trata solo de llegar a la F1. Se trata de ser el ejemplo que inspire a quienes vienen después de ti.</div>
+
+      <div class="dest-steps">
+        <div class="dest-step">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-text">Construir carácter con valores sólidos</div>
+            <div class="step-sub">Honestidad, creatividad y lealtad como base</div>
+          </div>
+        </div>
+        <div class="dest-step">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-text">Dominar habilidades únicas</div>
+            <div class="step-sub">Programación + música + videojuegos = mente extraordinaria</div>
+          </div>
+        </div>
+        <div class="dest-step">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-text">Alcanzar la Fórmula 1</div>
+            <div class="step-sub">El sueño que se convierte en historia familiar</div>
+          </div>
+        </div>
+        <div class="dest-step">
+          <div class="step-num">4</div>
+          <div>
+            <div class="step-text">Ser el orgullo y la inspiración</div>
+            <div class="step-sub">Tu historia vive en las próximas generaciones</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-quote">
+        "Las huellas que dejas no son las de tus zapatos, sino las de tus decisiones. Cada valor que vives, cada habilidad que dominas y cada meta que persigues escribe el legado que tu familia recordará."
+      </div>
+    </div>
+  </div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+  let coins = 340;
+  const activatedValues = new Set();
+  const completedQuests = new Set();
+
+  function showTab(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const tabs = ['valores','habilidades','metas','destino'];
+    document.querySelectorAll('.nav-btn')[tabs.indexOf(id)].classList.add('active');
+  }
+
+  function activateValue(el, xp, msg) {
+    const key = el.querySelector('.val-name').textContent;
+    if (activatedValues.has(key)) { showToast('Ya tienes este valor activo ✓'); return; }
+    activatedValues.add(key);
+    el.classList.add('activated');
+    el.style.animation = 'pulse 0.4s ease';
+    setTimeout(() => el.style.animation = '', 500);
+    addXP(xp);
+    showToast(msg);
+  }
+
+  function toggleSkill(id, card) {
+    const detail = document.getElementById('detail-' + id);
+    const isOpen = detail.classList.contains('open');
+    document.querySelectorAll('.skill-detail').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('active-sk'));
+    if (!isOpen) {
+      detail.classList.add('open');
+      card.classList.add('active-sk');
+    }
+  }
+
+  function completeQuest(id, xp) {
+    if (completedQuests.has(id)) return;
+    completedQuests.add(id);
+    const card = document.getElementById(id);
+    const btn = card.querySelector('.check-btn');
+    card.classList.add('done-card');
+    btn.classList.add('done-btn');
+    addXP(xp);
+    showToast('¡Misión completada! +' + xp + ' XP 🏆');
+  }
+
+  function addXP(amount) {
+    coins += amount;
+    document.getElementById('coins').textContent = coins;
+    const pct = Math.min(Math.round((coins / 500) * 100), 100);
+    document.getElementById('xpBar').style.width = pct + '%';
+    if (coins >= 500) setTimeout(() => showToast('🎉 ¡Subiste de nivel! Nivel 8'), 900);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  setTimeout(() => { document.getElementById('xpBar').style.width = '68%'; }, 400);
+</script>
+</body>
+</html>
