@@ -6,1116 +6,1226 @@
 <title>LEVEL UP — Mi Evolución F1 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ===== ROOT TOKENS ===== */
-:root {
-  --bg:       #080810;
-  --bg2:      #0d0d1f;
-  --bg3:      #111128;
-  --card:     #14142a;
-  --card2:    #1a1a36;
-  --border:   rgba(255,50,50,0.15);
-  --border2:  rgba(255,80,80,0.35);
-  --red:      #ff2d2d;
-  --red2:     #ff5f5f;
-  --orange:   #ff6b00;
-  --amber:    #ffc107;
-  --teal:     #00e5ff;
-  --green:    #00ff88;
-  --purple:   #a855f7;
-  --text:     #f0f0ff;
-  --text2:    rgba(240,240,255,0.6);
-  --text3:    rgba(240,240,255,0.3);
-  --font-hud: 'Orbitron', monospace;
-  --font-body:'Rajdhani', sans-serif;
-  --r:        10px;
-  --r2:       14px;
+:root{
+  --bg:#080810;--bg2:#0d0d1f;--card:#14142a;--card2:#1a1a36;
+  --border:rgba(255,50,50,0.18);--border2:rgba(255,80,80,0.4);
+  --red:#ff2d2d;--red2:#ff5f5f;--orange:#ff6b00;
+  --amber:#ffc107;--teal:#00e5ff;--green:#00ff88;--purple:#a855f7;
+  --text:#f0f0ff;--text2:rgba(240,240,255,0.62);--text3:rgba(240,240,255,0.32);
+  --hud:'Orbitron',monospace;--body:'Rajdhani',sans-serif;
+  --r:10px;--r2:14px;
 }
+body.race-day{
+  --bg:#08050a;--card:#18001a;--border:rgba(255,215,0,0.25);
+  --red:#ffd700;--red2:#ffe066;--orange:#ffaa00;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden;transition:background 0.8s,color 0.5s}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:900;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px)}
 
-*,*::before,*::after { box-sizing: border-box; margin:0; padding:0; }
+/* TRACK LINES */
+.track-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.track-line{position:absolute;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(255,45,45,0.1) 50%,transparent);animation:tscroll 3s linear infinite}
+@keyframes tscroll{0%{transform:translateY(-100%);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(100%);opacity:0}}
 
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+#app{position:relative;z-index:1;max-width:500px;margin:0 auto;padding:14px 13px 130px}
 
-/* ===== SCANLINES OVERLAY ===== */
-body::before {
-  content:'';
-  position:fixed; inset:0; pointer-events:none; z-index:1000;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
-}
+/* ===== HUD ===== */
+.hud{background:linear-gradient(155deg,#110018,#0a001a,#030012);border:1px solid var(--border2);border-radius:16px;margin-bottom:14px;overflow:hidden;position:relative}
+.hud-bar{background:var(--red);height:4px;position:relative;overflow:hidden;transition:background 0.5s}
+.hud-bar::after{content:'';position:absolute;top:0;left:-40%;width:30%;height:100%;background:rgba(255,255,255,0.45);animation:scan 2s linear infinite}
+@keyframes scan{to{left:120%}}
+.hud-inner{padding:18px 16px 14px}
+.hud-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.avatar{width:62px;height:62px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#ff2d2d,#ff6b00);display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 0 0 3px rgba(255,45,45,0.3),0 0 18px rgba(255,45,45,0.3);animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{0%,100%{box-shadow:0 0 0 3px rgba(255,45,45,0.3),0 0 18px rgba(255,45,45,0.2)}50%{box-shadow:0 0 0 3px rgba(255,45,45,0.6),0 0 28px rgba(255,45,45,0.5)}}
+.dinfo{flex:1}
+.dname{font-family:var(--hud);font-size:14px;font-weight:700;color:var(--text);letter-spacing:.05em;text-shadow:0 0 10px rgba(255,80,80,0.4)}
+.drole{font-size:11px;color:var(--red2);font-family:var(--hud);letter-spacing:.07em;margin-top:2px}
+.dseason{font-size:10px;color:var(--text3);margin-top:3px;font-weight:500}
+.lvlbadge{background:linear-gradient(135deg,var(--red),var(--orange));border-radius:8px;padding:7px 11px;text-align:center;flex-shrink:0;cursor:pointer;transition:transform 0.2s}
+.lvlbadge:hover{transform:scale(1.05)}
+.lvlnum{font-family:var(--hud);font-size:22px;font-weight:900;color:#fff;line-height:1;display:block;text-shadow:0 0 10px rgba(255,255,255,0.5)}
+.lvllbl{font-size:8px;color:rgba(255,255,255,0.7);letter-spacing:.1em;font-weight:600}
+.xpsec{margin-bottom:11px}
+.xprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.xplbl{font-family:var(--hud);font-size:9px;color:var(--text3);letter-spacing:.08em}
+.xpval{font-family:var(--hud);font-size:10px;color:var(--red2);font-weight:600}
+.xptrack{height:9px;border-radius:5px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,45,45,0.2);overflow:hidden;position:relative}
+.xpfill{height:100%;border-radius:5px;width:0%;background:linear-gradient(90deg,var(--red),var(--orange),var(--amber));transition:width 1.2s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.xpfill::after{content:'';position:absolute;top:0;left:-40%;width:30%;height:100%;background:rgba(255,255,255,0.28);animation:shimmer 1.8s linear infinite}
+@keyframes shimmer{to{left:120%}}
 
-/* ===== ANIMATED TRACK BG ===== */
-.track-bg {
-  position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
-}
-.track-line {
-  position:absolute; top:0; bottom:0; width:1px;
-  background: linear-gradient(180deg, transparent 0%, rgba(255,45,45,0.12) 50%, transparent 100%);
-  animation: trackScroll 3s linear infinite;
-}
-@keyframes trackScroll {
-  0%   { transform: translateY(-100%); opacity:0; }
-  10%  { opacity:1; }
-  90%  { opacity:1; }
-  100% { transform: translateY(100%); opacity:0; }
-}
+/* RACE TRACK */
+.rtrack-wrap{margin-bottom:12px}
+.rtrack-lrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.rtrack-outer{background:rgba(0,0,0,0.45);border:1px solid rgba(255,45,45,0.22);border-radius:40px;padding:3px 5px}
+.rroad{background:linear-gradient(180deg,#1c1c1c,#2d2d2d 50%,#1c1c1c);border-radius:40px;height:34px;position:relative;border:1px solid rgba(255,255,255,0.05)}
+.rdash{position:absolute;top:50%;left:8px;right:8px;height:1px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,rgba(255,255,255,0.16) 0,rgba(255,255,255,0.16) 10px,transparent 10px,transparent 22px)}
+.rflag{position:absolute;top:50%;transform:translateY(-62%);font-size:12px;z-index:2;pointer-events:none}
+.rcar-wrap{position:absolute;top:50%;left:4%;transform:translate(-50%,-50%);z-index:10;transition:left 1.3s cubic-bezier(0.4,0,0.2,1);display:flex;align-items:center}
+.rcar-svg{width:50px;height:22px;filter:drop-shadow(0 0 5px rgba(255,45,45,0.9))}
+.rcar-glow{position:absolute;width:58px;height:16px;background:radial-gradient(ellipse,rgba(255,100,0,0.45) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:-1;animation:cglow 0.6s ease-in-out infinite alternate}
+@keyframes cglow{from{opacity:.4;transform:translate(-50%,-50%) scaleX(.8)}to{opacity:1;transform:translate(-50%,-50%) scaleX(1.2)}}
+.exhaust{position:absolute;right:100%;top:50%;transform:translateY(-50%);width:5px;height:3px;border-radius:50%;background:rgba(255,107,0,.7);animation:exh .3s linear infinite}
+.exhaust2{top:62%;animation-delay:.15s;background:rgba(255,60,0,.5)}
+@keyframes exh{0%{opacity:.8;transform:translateY(-50%) translateX(0) scale(1)}100%{opacity:0;transform:translateY(-65%) translateX(-18px) scale(2.5)}}
+.rmiles{display:flex;justify-content:space-between;padding:3px 2px 0;font-family:var(--hud);font-size:7px;color:var(--text3)}
+@keyframes cboost{0%{filter:drop-shadow(0 0 5px rgba(255,45,45,.9))}45%{filter:drop-shadow(0 0 16px rgba(255,200,0,1)) drop-shadow(0 0 28px rgba(255,107,0,.9))}100%{filter:drop-shadow(0 0 5px rgba(255,45,45,.9))}}
+.rcar-wrap.boost .rcar-svg{animation:cboost .6s ease}
 
-/* ===== MAIN WRAPPER ===== */
-#app {
-  position: relative; z-index:1;
-  max-width: 500px; margin:0 auto;
-  padding: 16px 14px 100px;
-}
+/* GAUGES */
+.gauges{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.gauge{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:7px 5px;text-align:center;cursor:pointer;transition:all 0.2s}
+.gauge:hover{border-color:var(--border2);background:rgba(255,45,45,0.06)}
+.gauge-icon{font-size:15px;display:block;margin-bottom:2px}
+.gauge-val{font-family:var(--hud);font-size:13px;font-weight:700;color:var(--red2);line-height:1;display:block}
+.gauge-lbl{font-size:8px;color:var(--text3);letter-spacing:.05em;font-weight:600;margin-top:2px}
 
-/* ===== HUD HEADER ===== */
-.hud-header {
-  background: linear-gradient(160deg, #110018 0%, #0a001a 40%, #030012 100%);
-  border: 1px solid var(--border2);
-  border-radius: 16px;
-  padding: 0;
-  margin-bottom: 16px;
-  overflow: hidden;
-  position: relative;
-}
-.hud-top-bar {
-  background: var(--red);
-  height: 4px;
-  width:100%;
-  position:relative;
-  overflow:hidden;
-}
-.hud-top-bar::after {
-  content:'';
-  position:absolute; top:0; left:-40%;
-  width:30%; height:100%;
-  background: rgba(255,255,255,0.5);
-  animation: scanBar 2s linear infinite;
-}
-@keyframes scanBar { to { left:120%; } }
+/* NAV */
+.nav{display:flex;gap:4px;margin-bottom:14px;background:var(--card);border-radius:12px;padding:4px;border:1px solid var(--border)}
+.nbtn{flex:1;padding:8px 2px;font-family:var(--hud);font-size:8px;font-weight:700;letter-spacing:.04em;color:var(--text3);background:transparent;border:none;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all 0.2s;text-transform:uppercase}
+.nbtn .ni{font-size:16px}
+.nbtn.active{background:linear-gradient(135deg,rgba(255,45,45,0.2),rgba(255,107,0,0.1));color:var(--red2);border:1px solid rgba(255,45,45,0.3)}
+.nbtn:hover:not(.active){background:rgba(255,255,255,0.04);color:var(--text2)}
 
-.hud-inner { padding: 20px 18px 18px; }
+/* SCREENS */
+.screen{display:none;animation:fadeSlide .3s ease}
+.screen.active{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.stitle{font-family:var(--hud);font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:11px;display:flex;align-items:center;gap:6px}
+.stitle::before{content:'';display:block;width:14px;height:2px;background:var(--red)}
 
-.hud-row1 {
-  display:flex; align-items:center; gap:14px; margin-bottom:16px;
-}
-.driver-avatar {
-  width:66px; height:66px; border-radius:50%; flex-shrink:0;
-  background: linear-gradient(135deg, #ff2d2d, #ff6b00);
-  display:flex; align-items:center; justify-content:center;
-  font-size:30px;
-  box-shadow: 0 0 0 3px rgba(255,45,45,0.3), 0 0 20px rgba(255,45,45,0.3);
-  animation: breathe 3s ease-in-out infinite;
-}
-@keyframes breathe {
-  0%,100%{ box-shadow:0 0 0 3px rgba(255,45,45,0.3), 0 0 20px rgba(255,45,45,0.2); }
-  50%    { box-shadow:0 0 0 3px rgba(255,45,45,0.6), 0 0 30px rgba(255,45,45,0.5); }
-}
-.driver-info { flex:1; }
-.driver-name {
-  font-family: var(--font-hud);
-  font-size:15px; font-weight:700;
-  color: var(--text); letter-spacing:0.05em;
-  text-shadow: 0 0 12px rgba(255,80,80,0.4);
-}
-.driver-role {
-  font-size:12px; color: var(--red2);
-  font-family: var(--font-hud); letter-spacing:0.08em;
-  margin-top:2px;
-}
-.driver-season {
-  font-size:11px; color: var(--text3);
-  margin-top:4px; font-weight:500;
-}
-.level-badge {
-  background: linear-gradient(135deg, var(--red), var(--orange));
-  border-radius:8px; padding:8px 12px; text-align:center; flex-shrink:0;
-}
-.level-num {
-  font-family: var(--font-hud); font-size:24px; font-weight:900;
-  color:#fff; line-height:1; display:block;
-  text-shadow: 0 0 10px rgba(255,255,255,0.5);
-}
-.level-lbl { font-size:9px; color:rgba(255,255,255,0.7); letter-spacing:0.1em; font-weight:600; }
+/* ===== STATS ===== */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.scard{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:13px;position:relative;overflow:hidden;cursor:pointer;transition:all .2s}
+.scard:hover{border-color:var(--border2);transform:translateY(-2px)}
+.scard::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--red))}
+.scard-icon{font-size:20px;margin-bottom:5px;display:block}
+.scard-lbl{font-size:11px;color:var(--text2);font-weight:600;margin-bottom:3px}
+.scard-big{font-family:var(--hud);font-size:24px;font-weight:900;color:var(--text);line-height:1}
+.scard-big span{font-size:12px;color:var(--text2);font-weight:500}
+.sbar-wrap{margin-top:7px;background:rgba(255,255,255,0.06);border-radius:3px;height:4px}
+.sbar{height:100%;border-radius:3px;background:var(--ac,var(--red));transition:width 1s ease}
+.scard-sub{font-size:9px;color:var(--text3);margin-top:3px}
+.delta{position:absolute;top:9px;right:9px;font-size:9px;font-weight:700;font-family:var(--hud);padding:2px 5px;border-radius:4px}
+.dup{background:rgba(0,255,136,0.12);color:var(--green)}
+.ddn{background:rgba(255,45,45,0.12);color:var(--red2)}
+.radar-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:14px;margin-bottom:12px}
+.radar-title{font-size:11px;color:var(--text2);font-weight:600;margin-bottom:10px}
 
-/* XP BAR */
-.xp-section { margin-bottom:14px; }
-.xp-label-row {
-  display:flex; justify-content:space-between; align-items:center;
-  margin-bottom:5px;
-}
-.xp-lbl { font-family:var(--font-hud); font-size:10px; color:var(--text3); letter-spacing:0.08em; }
-.xp-val { font-family:var(--font-hud); font-size:11px; color:var(--red2); font-weight:600; }
-.xp-track {
-  height:10px; border-radius:5px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,45,45,0.2);
-  overflow:hidden; position:relative;
-}
-.xp-fill {
-  height:100%; border-radius:5px; width:0%;
-  background: linear-gradient(90deg, var(--red), var(--orange), var(--amber));
-  transition: width 1.2s cubic-bezier(.4,0,.2,1);
-  position:relative; overflow:hidden;
-}
-.xp-fill::after {
-  content:'';
-  position:absolute; top:0; left:-40%; width:30%; height:100%;
-  background:rgba(255,255,255,0.3);
-  animation: shimmer 1.8s linear infinite;
-}
-@keyframes shimmer { to { left:120%; } }
+/* ===== VALUES ===== */
+.vcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:14px;margin-bottom:9px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.vcard::before{content:'';position:absolute;top:0;bottom:0;left:0;width:3px;background:var(--vc,var(--red))}
+.vcard:hover{border-color:var(--border2);transform:translateX(4px)}
+.vcard.fired{background:rgba(255,45,45,0.04);border-color:rgba(255,45,45,0.28)}
+.vic{width:46px;height:46px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--border)}
+.vname{font-family:var(--hud);font-size:13px;font-weight:700;color:var(--text);letter-spacing:.03em}
+.vdesc{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.5}
+.vxprow{display:flex;align-items:center;gap:5px;margin-top:7px}
+.vbar-wrap{flex:1;background:rgba(255,255,255,0.06);border-radius:3px;height:4px}
+.vbar{height:100%;border-radius:3px;background:var(--vc,var(--red));width:0%;transition:width .8s ease}
+.vxplbl{font-family:var(--hud);font-size:8px;color:var(--text3)}
+.eqbtn{margin-left:auto;flex-shrink:0;background:transparent;border:1px solid var(--border2);border-radius:6px;padding:5px 9px;font-family:var(--hud);font-size:8px;font-weight:700;color:var(--text2);cursor:pointer;letter-spacing:.07em;transition:all .2s}
+.eqbtn.on{background:linear-gradient(135deg,rgba(0,255,136,0.15),rgba(0,229,255,0.1));border-color:var(--green);color:var(--green)}
 
-/* STAT GAUGES */
-.gauges {
-  display:grid; grid-template-columns: repeat(4, 1fr); gap:8px;
-}
-.gauge {
-  background: rgba(0,0,0,0.3);
-  border: 1px solid var(--border);
-  border-radius:8px; padding:8px 6px; text-align:center;
-  cursor:pointer; transition:all 0.2s;
-}
-.gauge:hover { border-color:var(--border2); background:rgba(255,45,45,0.05); }
-.gauge-icon { font-size:16px; display:block; margin-bottom:3px; }
-.gauge-val {
-  font-family:var(--font-hud); font-size:14px; font-weight:700;
-  color:var(--red2); line-height:1; display:block;
-}
-.gauge-lbl { font-size:9px; color:var(--text3); letter-spacing:0.06em; font-weight:600; margin-top:2px; }
+/* ===== ENGINE TREE ===== */
+.eng-container{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:14px;margin-bottom:12px;position:relative;overflow:hidden}
+.eng-title{font-family:var(--hud);font-size:10px;color:var(--text2);letter-spacing:.1em;margin-bottom:12px;text-align:center}
+#engSVG{display:block;width:100%;max-width:440px;margin:0 auto}
+.eng-node{cursor:pointer;transition:all .2s}
+.eng-node:hover circle{filter:brightness(1.3)}
+.sip{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:var(--r);padding:12px 13px;margin-top:9px;display:none}
+.sip.open{display:block;animation:fadeSlide .3s ease}
+.sip-head{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.sip-icon{font-size:22px}
+.sip-name{font-family:var(--hud);font-size:12px;color:var(--text);font-weight:700}
+.sip-lvl{font-size:10px;color:var(--text3)}
+.sip-desc{font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:7px}
+.sip-bw{background:rgba(255,255,255,0.06);border-radius:3px;height:5px;margin-bottom:3px}
+.sip-bf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--red),var(--orange));transition:width .9s ease}
+.sip-xp{font-family:var(--hud);font-size:9px;color:var(--text3)}
 
-/* ===== NAV ===== */
-.nav {
-  display:flex; gap:5px; margin-bottom:16px;
-  background:var(--card); border-radius:12px;
-  padding:4px; border:1px solid var(--border);
-}
-.nav-btn {
-  flex:1; padding:9px 4px;
-  font-family:var(--font-hud); font-size:9px; font-weight:700; letter-spacing:0.06em;
-  color:var(--text3); background:transparent; border:none;
-  border-radius:8px; cursor:pointer;
-  display:flex; flex-direction:column; align-items:center; gap:3px;
-  transition:all 0.2s; text-transform:uppercase;
-}
-.nav-btn .nav-icon { font-size:18px; }
-.nav-btn.active {
-  background: linear-gradient(135deg, rgba(255,45,45,0.2), rgba(255,107,0,0.1));
-  color:var(--red2);
-  border:1px solid rgba(255,45,45,0.3);
-}
-.nav-btn:hover:not(.active) { background:rgba(255,255,255,0.04); color:var(--text2); }
+/* ===== DECISIONS ===== */
+.dec-scene{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:10px;position:relative;overflow:hidden}
+.dec-scene::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--orange),var(--amber))}
+.dec-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,45,45,0.12);border:1px solid rgba(255,45,45,0.3);border-radius:20px;padding:3px 10px;font-family:var(--hud);font-size:8px;color:var(--red2);letter-spacing:.07em;margin-bottom:10px}
+.dec-question{font-family:var(--hud);font-size:13px;color:var(--text);line-height:1.5;margin-bottom:6px;font-weight:700}
+.dec-context{font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.dec-choices{display:flex;flex-direction:column;gap:8px}
+.dec-btn{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;cursor:pointer;text-align:left;transition:all .22s;position:relative;overflow:hidden}
+.dec-btn:hover{border-color:var(--border2);background:rgba(255,45,45,0.06);transform:translateX(3px)}
+.dec-btn-label{font-family:var(--hud);font-size:10px;color:var(--red2);letter-spacing:.06em;margin-bottom:3px;font-weight:700}
+.dec-btn-text{font-size:12px;color:var(--text);line-height:1.4}
+.dec-btn-hint{font-size:10px;color:var(--text3);margin-top:4px}
+.dec-btn.good{border-color:rgba(0,255,136,0.4);background:rgba(0,255,136,0.05)}
+.dec-btn.bad{border-color:rgba(255,45,45,0.4);background:rgba(255,45,45,0.05)}
+.dec-result{display:none;margin-top:12px;padding:12px 14px;border-radius:var(--r);animation:fadeSlide .4s ease}
+.dec-result.show{display:block}
+.dec-result.good-r{background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3)}
+.dec-result.bad-r{background:rgba(255,45,45,0.08);border:1px solid rgba(255,45,45,0.25)}
+.dec-result-title{font-family:var(--hud);font-size:11px;font-weight:700;margin-bottom:5px}
+.dec-result-text{font-size:11px;color:var(--text2);line-height:1.6}
+.dec-result-xp{font-family:var(--hud);font-size:10px;margin-top:6px;font-weight:700}
+.dec-done{text-align:center;padding:10px 0;font-family:var(--hud);font-size:10px;color:var(--text3);letter-spacing:.08em}
+.dec-refresh{background:rgba(255,45,45,0.12);border:1px solid rgba(255,45,45,0.3);border-radius:20px;padding:6px 14px;font-family:var(--hud);font-size:9px;color:var(--red2);cursor:pointer;letter-spacing:.07em;margin-top:8px;transition:all .2s}
+.dec-refresh:hover{background:rgba(255,45,45,0.22)}
 
-/* ===== SCREENS ===== */
-.screen { display:none; animation: fadeSlide 0.3s ease; }
-.screen.active { display:block; }
-@keyframes fadeSlide { from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+/* ===== QUESTS ===== */
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;display:flex;align-items:flex-start;gap:11px;transition:all .2s;position:relative;overflow:hidden}
+.qcard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--red),transparent);opacity:0;transition:opacity .2s}
+.qcard:hover::after{opacity:1}
+.qcard:hover{border-color:var(--border2)}
+.qcard.done-c{opacity:.5}
+.qi{width:42px;height:42px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:19px;border:1px solid var(--border)}
+.qred{background:rgba(255,45,45,0.12)}.qblue{background:rgba(59,130,246,0.12)}.qgreen{background:rgba(0,255,136,0.1)}.qamber{background:rgba(255,193,7,0.1)}
+.qtitle{font-family:var(--hud);font-size:11px;font-weight:700;color:var(--text);letter-spacing:.03em;margin-bottom:3px}
+.qdesc{font-size:11px;color:var(--text2);line-height:1.5}
+.qpw{background:rgba(255,255,255,0.06);border-radius:3px;height:3px;margin-top:7px}
+.qpb{height:100%;border-radius:3px;background:var(--red)}
+.qrew{font-family:var(--hud);font-size:9px;color:var(--amber);margin-top:4px;font-weight:700;letter-spacing:.04em}
+.cbtn{margin-left:auto;flex-shrink:0;width:30px;height:30px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);background:transparent;cursor:pointer;color:var(--text3);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-weight:700}
+.cbtn:hover:not(.done-btn){border-color:var(--green);color:var(--green)}
+.cbtn.done-btn{background:var(--green);border-color:var(--green);color:#000}
 
-.sec-title {
-  font-family:var(--font-hud); font-size:10px; font-weight:700;
-  color:var(--text3); letter-spacing:0.14em; text-transform:uppercase;
-  margin-bottom:12px; display:flex; align-items:center; gap:6px;
-}
-.sec-title::before {
-  content:''; display:block; width:16px; height:2px;
-  background:var(--red);
-}
+/* ===== INVENTORY ===== */
+.inv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.item-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px 8px;text-align:center;cursor:pointer;transition:all .22s;position:relative}
+.item-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.item-card.owned{border-color:rgba(0,255,136,0.35);background:rgba(0,255,136,0.04)}
+.item-card.equipped-item{border-color:var(--amber);background:rgba(255,193,7,0.06)}
+.item-card.equipped-item::after{content:'EQUIPADO';position:absolute;top:5px;right:5px;font-family:var(--hud);font-size:6px;color:var(--amber);letter-spacing:.05em}
+.item-icon{font-size:28px;display:block;margin-bottom:5px}
+.item-name{font-family:var(--hud);font-size:9px;font-weight:700;color:var(--text);letter-spacing:.03em;margin-bottom:3px}
+.item-stat{font-size:10px;color:var(--green);font-weight:600;margin-bottom:4px}
+.item-cost{font-family:var(--hud);font-size:9px;color:var(--amber);font-weight:600}
+.item-cost.owned{color:var(--green)}
+.inv-hint{font-size:11px;color:var(--text3);text-align:center;padding:8px;font-family:var(--hud);font-size:9px;letter-spacing:.05em}
 
-/* ===== STATS SCREEN ===== */
-.stats-grid {
-  display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;
-}
-.stat-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:var(--r2); padding:14px; position:relative; overflow:hidden;
-  cursor:pointer; transition:all 0.2s;
-}
-.stat-card:hover { border-color:var(--border2); transform:translateY(-2px); }
-.stat-card::after {
-  content:''; position:absolute; top:0; left:0; right:0; height:2px;
-  background: var(--accent-color, var(--red));
-}
-.stat-icon { font-size:22px; margin-bottom:6px; display:block; }
-.stat-label { font-size:12px; color:var(--text2); font-weight:600; margin-bottom:4px; }
-.stat-big {
-  font-family:var(--font-hud); font-size:26px; font-weight:900;
-  color:var(--text); line-height:1;
-}
-.stat-big span { font-size:13px; color:var(--text2); font-weight:500; }
-.stat-bar-wrap { margin-top:8px; background:rgba(255,255,255,0.06); border-radius:3px; height:4px; }
-.stat-bar { height:100%; border-radius:3px; background:var(--accent-color,var(--red)); transition:width 1s ease; }
-.stat-sub { font-size:10px; color:var(--text3); margin-top:4px; }
+/* ===== PITSTOP MINIGAME ===== */
+.pit-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:12px;text-align:center}
+.pit-title{font-family:var(--hud);font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:.05em}
+.pit-sub{font-size:11px;color:var(--text2);margin-bottom:16px;line-height:1.5}
+.pit-timer{font-family:var(--hud);font-size:40px;font-weight:900;color:var(--red);margin-bottom:8px;text-shadow:0 0 20px rgba(255,45,45,0.5);transition:color .1s}
+.pit-timer.go{color:var(--green);text-shadow:0 0 20px rgba(0,255,136,0.5)}
+.pit-seq{display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
+.pit-key{width:44px;height:44px;border-radius:8px;background:rgba(255,255,255,0.05);border:2px solid var(--border);font-family:var(--hud);font-size:16px;font-weight:700;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all .15s}
+.pit-key.active-k{border-color:var(--amber);color:var(--amber);background:rgba(255,193,7,0.12);transform:scale(1.1)}
+.pit-key.done-k{border-color:var(--green);color:var(--green);background:rgba(0,255,136,0.1)}
+.pit-key.wrong-k{border-color:var(--red);color:var(--red);background:rgba(255,45,45,0.1);animation:shake .2s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.pit-startbtn{background:linear-gradient(135deg,var(--red),var(--orange));border:none;border-radius:var(--r);padding:11px 28px;font-family:var(--hud);font-size:11px;font-weight:700;color:white;cursor:pointer;letter-spacing:.08em;transition:all .2s}
+.pit-startbtn:hover{transform:scale(1.04);box-shadow:0 0 18px rgba(255,45,45,0.4)}
+.pit-startbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.pit-result{font-family:var(--hud);font-size:11px;margin-top:10px;min-height:18px;letter-spacing:.05em}
+.pit-board{margin-top:12px;border-top:1px solid var(--border);padding-top:10px}
+.pit-board-title{font-family:var(--hud);font-size:9px;color:var(--text3);letter-spacing:.1em;margin-bottom:7px}
+.pit-board-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-family:var(--hud);font-size:10px}
+.pit-board-pos{color:var(--amber)}
+.pit-board-time{color:var(--green)}
 
-.delta-badge {
-  position:absolute; top:10px; right:10px;
-  font-size:10px; font-weight:700; font-family:var(--font-hud);
-  padding:2px 6px; border-radius:4px;
-}
-.delta-up { background:rgba(0,255,136,0.12); color:var(--green); }
-.delta-down { background:rgba(255,45,45,0.12); color:var(--red2); }
+/* ===== TALENT TREE ===== */
+.talent-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.talent-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:13px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+.talent-card:hover:not(.locked-t){border-color:var(--border2);transform:translateY(-2px)}
+.talent-card.unlocked-t{border-color:rgba(0,255,136,0.4);background:rgba(0,255,136,0.04)}
+.talent-card.locked-t{opacity:.55;cursor:not-allowed}
+.talent-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--tc,var(--red))}
+.ticon{font-size:24px;margin-bottom:6px;display:block}
+.tname{font-family:var(--hud);font-size:10px;font-weight:700;color:var(--text);letter-spacing:.04em;margin-bottom:3px}
+.tdesc{font-size:10px;color:var(--text2);line-height:1.5;margin-bottom:6px}
+.tcost{font-family:var(--hud);font-size:9px;font-weight:700}
+.tcost.can{color:var(--amber)}
+.tcost.cant{color:var(--text3)}
+.tcost.done{color:var(--green)}
+.treq{font-size:9px;color:var(--text3);margin-top:2px}
+.tspec-badge{position:absolute;top:8px;right:8px;font-family:var(--hud);font-size:7px;padding:2px 6px;border-radius:10px;letter-spacing:.05em}
 
-.radar-wrap {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:var(--r2); padding:16px; margin-bottom:14px;
-}
-.radar-title { font-size:12px; color:var(--text2); font-weight:600; margin-bottom:12px; }
+/* ===== RIVALS ===== */
+.rival-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;margin-bottom:9px;display:flex;align-items:center;gap:12px}
+.rival-avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid}
+.rival-info{flex:1}
+.rival-name{font-family:var(--hud);font-size:11px;font-weight:700;color:var(--text);letter-spacing:.04em}
+.rival-role{font-size:10px;color:var(--text3);margin-top:1px}
+.rival-bw{background:rgba(255,255,255,0.06);border-radius:3px;height:6px;margin-top:7px;position:relative;overflow:hidden}
+.rival-bf{height:100%;border-radius:3px;transition:width 1s ease}
+.rival-gap{font-family:var(--hud);font-size:9px;margin-top:4px}
+.rival-gap.ahead{color:var(--red2)}
+.rival-gap.behind{color:var(--green)}
+.rival-pos{font-family:var(--hud);font-size:18px;font-weight:900;color:var(--text3);flex-shrink:0}
+.my-pos-bar{background:var(--card);border:1px solid rgba(0,255,136,0.3);border-radius:var(--r2);padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
 
-/* RADAR SVG */
-#radar-svg { display:block; margin:0 auto; }
+/* ===== ACHIEVEMENTS ===== */
+.ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.ach-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:10px 6px;text-align:center;transition:all .2s;position:relative;overflow:hidden}
+.ach-card.unlocked-a{border-color:rgba(255,193,7,0.4);background:rgba(255,193,7,0.04)}
+.ach-card.unlocked-a::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center top,rgba(255,193,7,0.08),transparent 60%)}
+.ach-card.locked-a{opacity:.45;filter:grayscale(0.7)}
+.ach-icon{font-size:26px;display:block;margin-bottom:5px}
+.ach-name{font-family:var(--hud);font-size:7.5px;color:var(--text);letter-spacing:.04em;line-height:1.3}
+.ach-desc{font-size:9px;color:var(--text3);margin-top:3px;line-height:1.4}
 
-/* ===== VALUES SCREEN ===== */
-.val-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:var(--r2); padding:16px;
-  margin-bottom:10px; display:flex; align-items:center; gap:14px;
-  cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden;
-}
-.val-card::before {
-  content:''; position:absolute; top:0; bottom:0; left:0; width:3px;
-  background:var(--c,var(--red));
-}
-.val-card:hover { border-color:var(--border2); transform:translateX(5px); }
-.val-card.fired { background:rgba(255,45,45,0.05); border-color:rgba(255,45,45,0.3); }
-.val-icon-wrap {
-  width:50px; height:50px; border-radius:12px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center; font-size:24px;
-  border:1px solid var(--border);
-}
-.val-name { font-family:var(--font-hud); font-size:14px; font-weight:700; color:var(--text); letter-spacing:0.04em; }
-.val-desc { font-size:12px; color:var(--text2); margin-top:3px; line-height:1.5; }
-.val-xp-row { display:flex; align-items:center; gap:6px; margin-top:8px; }
-.val-xp-bar-wrap { flex:1; background:rgba(255,255,255,0.06); border-radius:3px; height:4px; }
-.val-xp-bar { height:100%; border-radius:3px; background:var(--c,var(--red)); width:0%; transition:width 0.8s ease; }
-.val-xp-lbl { font-family:var(--font-hud); font-size:9px; color:var(--text3); }
-
-.equip-btn {
-  margin-left:auto; flex-shrink:0;
-  background:transparent; border:1px solid var(--border2);
-  border-radius:6px; padding:5px 10px;
-  font-family:var(--font-hud); font-size:9px; font-weight:700;
-  color:var(--text2); cursor:pointer; letter-spacing:0.08em;
-  transition:all 0.2s; white-space:nowrap;
-}
-.equip-btn.equipped {
-  background:linear-gradient(135deg,rgba(0,255,136,0.15),rgba(0,229,255,0.1));
-  border-color:var(--green); color:var(--green);
-}
-
-/* ===== ENGINE TREE SCREEN ===== */
-.engine-container {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:var(--r2); padding:16px; margin-bottom:14px;
-  position:relative; overflow:hidden;
-}
-.engine-title {
-  font-family:var(--font-hud); font-size:11px; color:var(--text2);
-  letter-spacing:0.1em; margin-bottom:14px; text-align:center;
-}
-#engineSVG { display:block; width:100%; max-width:440px; margin:0 auto; }
-
-.skill-info-panel {
-  background:rgba(0,0,0,0.3); border:1px solid var(--border);
-  border-radius:var(--r); padding:12px 14px; margin-top:10px;
-  display:none;
-}
-.skill-info-panel.open { display:block; animation:fadeSlide 0.3s ease; }
-.sip-head { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
-.sip-icon { font-size:24px; }
-.sip-name { font-family:var(--font-hud); font-size:13px; color:var(--text); font-weight:700; }
-.sip-lvl { font-size:11px; color:var(--text3); }
-.sip-desc { font-size:12px; color:var(--text2); line-height:1.6; margin-bottom:8px; }
-.sip-bar-wrap { background:rgba(255,255,255,0.06); border-radius:3px; height:6px; margin-bottom:4px; }
-.sip-bar { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--red),var(--orange)); transition:width 0.9s ease; }
-.sip-xp { font-family:var(--font-hud); font-size:10px; color:var(--text3); }
-
-/* ===== QUESTS SCREEN ===== */
-.quest-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:var(--r2); padding:14px 16px;
-  margin-bottom:10px; display:flex; align-items:flex-start; gap:12px;
-  transition:all 0.2s; position:relative; overflow:hidden;
-}
-.quest-card::after {
-  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
-  background:linear-gradient(90deg, var(--red), transparent);
-  opacity:0; transition:opacity 0.2s;
-}
-.quest-card:hover::after { opacity:1; }
-.quest-card:hover { border-color:var(--border2); }
-.quest-card.done-card { opacity:0.5; }
-.q-icon {
-  width:44px; height:44px; border-radius:10px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center; font-size:20px;
-  border:1px solid var(--border);
-}
-.q-red   { background:rgba(255,45,45,0.12); }
-.q-blue  { background:rgba(59,130,246,0.12); }
-.q-green { background:rgba(0,255,136,0.1); }
-.q-amber { background:rgba(255,193,7,0.1); }
-.quest-title { font-family:var(--font-hud); font-size:12px; font-weight:700; color:var(--text); letter-spacing:0.03em; margin-bottom:4px; }
-.quest-desc { font-size:12px; color:var(--text2); line-height:1.55; }
-.quest-reward { font-family:var(--font-hud); font-size:10px; color:var(--amber); margin-top:5px; font-weight:700; letter-spacing:0.04em; }
-.quest-progress-wrap { background:rgba(255,255,255,0.06); border-radius:3px; height:3px; margin-top:8px; }
-.quest-progress { height:100%; border-radius:3px; background:var(--red); }
-.check-btn {
-  margin-left:auto; flex-shrink:0;
-  width:32px; height:32px; border-radius:50%;
-  border:1.5px solid rgba(255,255,255,0.2);
-  background:transparent; cursor:pointer;
-  color:var(--text3); font-size:16px;
-  display:flex; align-items:center; justify-content:center;
-  transition:all 0.2s; font-weight:700;
-}
-.check-btn:hover:not(.done-btn) { border-color:var(--green); color:var(--green); }
-.check-btn.done-btn { background:var(--green); border-color:var(--green); color:#000; }
-
-/* ===== DESTINY SCREEN ===== */
-.dest-hero {
-  background: radial-gradient(ellipse at center top, rgba(255,45,45,0.15) 0%, transparent 60%),
-              var(--card);
-  border:1px solid var(--border); border-radius:var(--r2);
-  padding:24px 18px; text-align:center; margin-bottom:14px; position:relative; overflow:hidden;
-}
-.dest-trophy { font-size:56px; display:block; margin-bottom:10px; animation:float 2.8s ease-in-out infinite; }
-@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
-.dest-tagline {
-  font-family:var(--font-hud); font-size:9px; color:var(--red);
-  letter-spacing:0.2em; text-transform:uppercase; margin-bottom:8px;
-}
-.dest-h1 { font-family:var(--font-hud); font-size:17px; font-weight:900; color:var(--text); line-height:1.3; margin-bottom:8px; text-shadow:0 0 20px rgba(255,45,45,0.4); }
-.dest-sub { font-size:13px; color:var(--text2); line-height:1.7; }
-
-.timeline {
-  display:flex; flex-direction:column; gap:0; margin-bottom:14px; position:relative;
-}
-.timeline::before {
-  content:''; position:absolute; left:19px; top:20px; bottom:20px; width:2px;
-  background:linear-gradient(180deg, var(--red), var(--orange), var(--amber), var(--green));
-  opacity:0.4;
-}
-.tl-step {
-  display:flex; gap:14px; align-items:flex-start; padding:10px 0;
-  cursor:pointer; transition:all 0.2s;
-}
-.tl-step:hover .tl-card { border-color:var(--border2); }
-.tl-dot {
-  width:40px; height:40px; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-family:var(--font-hud); font-size:14px; font-weight:900;
-  border:2px solid; z-index:1; background:var(--bg);
-  transition:all 0.2s;
-}
-.tl-card {
-  flex:1; background:var(--card); border:1px solid var(--border);
-  border-radius:var(--r); padding:12px 14px; transition:all 0.2s;
-}
-.tl-title { font-family:var(--font-hud); font-size:12px; font-weight:700; color:var(--text); letter-spacing:0.04em; margin-bottom:3px; }
-.tl-desc { font-size:12px; color:var(--text2); line-height:1.55; }
-.tl-year { font-family:var(--font-hud); font-size:10px; color:var(--text3); margin-top:5px; }
-
-.legacy-quote {
-  background: linear-gradient(135deg, rgba(255,45,45,0.06), rgba(255,107,0,0.04));
-  border:1px solid var(--border);
-  border-left:3px solid var(--red);
-  border-radius:var(--r2); padding:16px;
-  font-size:13px; color:var(--text2); font-style:italic; line-height:1.75;
-}
+/* ===== DESTINY ===== */
+.dest-hero{background:radial-gradient(ellipse at center top,rgba(255,45,45,0.14) 0%,transparent 60%),var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:22px 16px;text-align:center;margin-bottom:12px;position:relative;overflow:hidden}
+.dest-trophy{font-size:52px;display:block;margin-bottom:8px;animation:float 2.8s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.dest-tag{font-family:var(--hud);font-size:8px;color:var(--red);letter-spacing:.2em;text-transform:uppercase;margin-bottom:7px}
+.dest-h1{font-family:var(--hud);font-size:16px;font-weight:900;color:var(--text);line-height:1.3;margin-bottom:7px;text-shadow:0 0 18px rgba(255,45,45,0.4)}
+.dest-sub{font-size:12px;color:var(--text2);line-height:1.7}
+.timeline{display:flex;flex-direction:column;gap:0;margin-bottom:12px;position:relative}
+.timeline::before{content:'';position:absolute;left:19px;top:20px;bottom:20px;width:2px;background:linear-gradient(180deg,var(--red),var(--orange),var(--amber),var(--green));opacity:.35}
+.tlstep{display:flex;gap:12px;align-items:flex-start;padding:8px 0;cursor:pointer;transition:all .2s}
+.tlstep:hover .tlcard{border-color:var(--border2)}
+.tldot{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--hud);font-size:13px;font-weight:900;border:2px solid;z-index:1;background:var(--bg)}
+.tlcard{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;transition:all .2s}
+.tltitle{font-family:var(--hud);font-size:11px;font-weight:700;color:var(--text);letter-spacing:.04em;margin-bottom:2px}
+.tldesc{font-size:11px;color:var(--text2);line-height:1.5}
+.tlyear{font-family:var(--hud);font-size:9px;color:var(--text3);margin-top:4px}
+.legacy-quote{background:linear-gradient(135deg,rgba(255,45,45,0.06),rgba(255,107,0,0.04));border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--r2);padding:14px;font-size:12px;color:var(--text2);font-style:italic;line-height:1.75}
 
 /* ===== TOAST ===== */
-#toast {
-  position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
-  background:var(--card2); border:1px solid var(--border2);
-  padding:10px 18px; border-radius:20px;
-  font-family:var(--font-hud); font-size:11px; color:var(--text); letter-spacing:0.04em;
-  white-space:nowrap; opacity:0; transition:opacity 0.3s;
-  z-index:9999; pointer-events:none;
-  box-shadow:0 4px 24px rgba(255,45,45,0.2);
-}
-#toast.show { opacity:1; }
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border2);padding:9px 16px;border-radius:20px;font-family:var(--hud);font-size:10px;color:var(--text);letter-spacing:.04em;white-space:nowrap;opacity:0;transition:opacity .3s;z-index:9999;pointer-events:none;box-shadow:0 4px 22px rgba(255,45,45,0.18)}
+#toast.show{opacity:1}
 
-/* ===== ANIMATIONS ===== */
-@keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.04);} }
-@keyframes glow { 0%,100%{filter:drop-shadow(0 0 4px rgba(255,45,45,0.4));} 50%{filter:drop-shadow(0 0 12px rgba(255,45,45,0.8));} }
+/* ===== ACHIEVEMENT POPUP ===== */
+#ach-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.7);background:linear-gradient(135deg,#1a1200,#0d0d00);border:2px solid var(--amber);border-radius:16px;padding:20px 28px;text-align:center;z-index:9998;opacity:0;transition:all .4s;pointer-events:none}
+#ach-popup.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#ach-popup-icon{font-size:44px;display:block;margin-bottom:6px}
+#ach-popup-title{font-family:var(--hud);font-size:9px;color:var(--amber);letter-spacing:.15em;margin-bottom:5px}
+#ach-popup-name{font-family:var(--hud);font-size:15px;font-weight:700;color:var(--text)}
 
-/* ===== ENGINE NODE STYLES ===== */
-.eng-node { cursor:pointer; transition:all 0.2s; }
-.eng-node:hover circle { filter:brightness(1.3); }
-.eng-node.active-node circle { filter:drop-shadow(0 0 6px var(--red)); }
+/* ===== OVERLAY ===== */
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9997;opacity:0;transition:opacity .3s;pointer-events:none}
+#overlay.show{opacity:1;pointer-events:all}
 
-/* Scrollbar */
-::-webkit-scrollbar { width:4px; }
-::-webkit-scrollbar-track { background:var(--bg); }
-::-webkit-scrollbar-thumb { background:rgba(255,45,45,0.3); border-radius:2px; }
+/* SOUND TOGGLE */
+.sound-btn{position:fixed;bottom:20px;right:16px;width:36px;height:36px;border-radius:50%;background:var(--card2);border:1px solid var(--border2);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:990;transition:all .2s}
+.sound-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* RACE DAY TOGGLE */
+.raceday-btn{position:fixed;bottom:20px;right:58px;width:36px;height:36px;border-radius:50%;background:var(--card2);border:1px solid var(--border2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:990;transition:all .2s}
+.raceday-btn:hover{border-color:var(--amber)}
+
+@keyframes levelup-burst{0%{transform:translate(-50%,-50%) scale(0.5);opacity:0}50%{opacity:1}100%{transform:translate(-50%,-50%) scale(2);opacity:0}}
+.levelup-burst{position:fixed;top:50%;left:50%;pointer-events:none;font-size:60px;z-index:9996;animation:levelup-burst .7s ease forwards}
 </style>
 </head>
 <body>
-
-<!-- TRACK BACKGROUND -->
 <div class="track-bg" id="trackBg"></div>
-
 <div id="app">
 
-  <!-- ===== HUD HEADER ===== -->
-  <div class="hud-header">
-    <div class="hud-top-bar"></div>
-    <div class="hud-inner">
-      <div class="hud-row1">
-        <div class="driver-avatar">🧑‍🔧</div>
-        <div class="driver-info">
-          <div class="driver-name">DRIVER #1</div>
-          <div class="driver-role">FUTURO MECÁNICO F1</div>
-          <div class="driver-season">TEMPORADA 2026 · COLOMBIA 🇨🇴</div>
-        </div>
-        <div class="level-badge">
-          <span class="level-num" id="levelNum">7</span>
-          <span class="level-lbl">LEVEL</span>
+<!-- HUD -->
+<div class="hud" id="mainHud">
+  <div class="hud-bar" id="hudBar"></div>
+  <div class="hud-inner">
+    <div class="hud-row">
+      <div class="avatar">🧑‍🔧</div>
+      <div class="dinfo">
+        <div class="dname">DRIVER #01</div>
+        <div class="drole">FUTURO MECÁNICO F1</div>
+        <div class="dseason">TEMPORADA 2026 · COLOMBIA 🇨🇴</div>
+      </div>
+      <div class="lvlbadge" onclick="showTab('logros')">
+        <span class="lvlnum" id="lvlNum">7</span>
+        <span class="lvllbl">LEVEL</span>
+      </div>
+    </div>
+    <div class="xpsec">
+      <div class="xprow">
+        <span class="xplbl">EXPERIENCE</span>
+        <span class="xpval" id="xpLbl">340 / 500 XP</span>
+      </div>
+      <div class="xptrack"><div class="xpfill" id="xpBar"></div></div>
+    </div>
+    <!-- RACE TRACK -->
+    <div class="rtrack-wrap">
+      <div class="rtrack-lrow">
+        <span class="xplbl">🏁 RUTA A LA F1</span>
+        <span class="xpval" id="stageLbl">INICIO</span>
+      </div>
+      <div class="rtrack-outer">
+        <div class="rroad" id="rroad">
+          <div class="rdash"></div>
+          <div class="rflag" style="left:18%">🛡️</div>
+          <div class="rflag" style="left:35%">🔧</div>
+          <div class="rflag" style="left:53%">🎓</div>
+          <div class="rflag" style="left:71%">🏟️</div>
+          <div class="rflag" style="left:89%">🏁</div>
+          <div class="rcar-wrap" id="carWrap">
+            <div class="rcar-glow"></div>
+            <svg class="rcar-svg" viewBox="0 0 48 22" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 13 L8 7 L36 7 L42 11 L44 13 L44 15 L4 15 Z" fill="#ff2d2d"/>
+              <path d="M14 7 L16 3 L28 3 L30 7 Z" fill="#1a1aff" opacity="0.8"/>
+              <path d="M44 12 L48 13 L44 14 Z" fill="#cc2200"/>
+              <path d="M40 15 L48 16 L48 17 L40 17 Z" fill="#cc2200"/>
+              <path d="M40 15 L48 14 L48 13 L40 13 Z" fill="#cc2200"/>
+              <path d="M4 7 L0 6 L0 8 L4 8 Z" fill="#cc2200"/>
+              <ellipse cx="12" cy="16" rx="4" ry="3.5" fill="#111" stroke="#555" stroke-width="0.8"/>
+              <ellipse cx="12" cy="16" rx="2" ry="1.8" fill="#333"/>
+              <ellipse cx="36" cy="16" rx="4" ry="3.5" fill="#111" stroke="#555" stroke-width="0.8"/>
+              <ellipse cx="36" cy="16" rx="2" ry="1.8" fill="#333"/>
+              <text x="22" y="12" text-anchor="middle" font-size="5" font-family="Orbitron" font-weight="700" fill="white">01</text>
+            </svg>
+            <div class="exhaust"></div>
+            <div class="exhaust exhaust2"></div>
+          </div>
         </div>
       </div>
-
-      <div class="xp-section">
-        <div class="xp-label-row">
-          <span class="xp-lbl">EXP TOTAL</span>
-          <span class="xp-val" id="xpValLbl">340 / 500 XP</span>
-        </div>
-        <div class="xp-track"><div class="xp-fill" id="xpBar"></div></div>
-      </div>
-
-      <div class="gauges">
-        <div class="gauge" title="Puntos ganados esta temporada">
-          <span class="gauge-icon">🏆</span>
-          <span class="gauge-val" id="g1">340</span>
-          <span class="gauge-lbl">PTS</span>
-        </div>
-        <div class="gauge" title="Misiones completadas">
-          <span class="gauge-icon">✅</span>
-          <span class="gauge-val" id="g2">0</span>
-          <span class="gauge-lbl">METAS</span>
-        </div>
-        <div class="gauge" title="Habilidades activas">
-          <span class="gauge-icon">⚡</span>
-          <span class="gauge-val" id="g3">3</span>
-          <span class="gauge-lbl">SKILLS</span>
-        </div>
-        <div class="gauge" title="Valores equipados">
-          <span class="gauge-icon">🛡️</span>
-          <span class="gauge-val" id="g4">0</span>
-          <span class="gauge-lbl">VALS</span>
-        </div>
-      </div>
+      <div class="rmiles"><span>START</span><span>Valores</span><span>Skills</span><span>Form.</span><span>Paddock</span><span>F1🏆</span></div>
+    </div>
+    <div class="gauges">
+      <div class="gauge"><span class="gauge-icon">⭐</span><span class="gauge-val" id="g-xp">340</span><span class="gauge-lbl">XP</span></div>
+      <div class="gauge"><span class="gauge-icon">✅</span><span class="gauge-val" id="g-q">0</span><span class="gauge-lbl">METAS</span></div>
+      <div class="gauge"><span class="gauge-icon">🎒</span><span class="gauge-val" id="g-inv">0</span><span class="gauge-lbl">ITEMS</span></div>
+      <div class="gauge"><span class="gauge-icon">🏅</span><span class="gauge-val" id="g-ach">0</span><span class="gauge-lbl">LOGROS</span></div>
     </div>
   </div>
+</div>
 
-  <!-- ===== NAV ===== -->
-  <nav class="nav">
-    <button class="nav-btn active" onclick="showTab('stats')">
-      <span class="nav-icon">📊</span>STATS
-    </button>
-    <button class="nav-btn" onclick="showTab('valores')">
-      <span class="nav-icon">🛡️</span>VALORES
-    </button>
-    <button class="nav-btn" onclick="showTab('engine')">
-      <span class="nav-icon">🔧</span>MOTOR
-    </button>
-    <button class="nav-btn" onclick="showTab('metas')">
-      <span class="nav-icon">🎯</span>METAS
-    </button>
-    <button class="nav-btn" onclick="showTab('destino')">
-      <span class="nav-icon">🌟</span>LEGACY
-    </button>
-  </nav>
+<!-- NAV -->
+<nav class="nav">
+  <button class="nbtn active" onclick="showTab('stats')"><span class="ni">📊</span>STATS</button>
+  <button class="nbtn" onclick="showTab('valores')"><span class="ni">🛡️</span>VALS</button>
+  <button class="nbtn" onclick="showTab('motor')"><span class="ni">🔧</span>MOTOR</button>
+  <button class="nbtn" onclick="showTab('decisiones')"><span class="ni">🎭</span>DECIS</button>
+  <button class="nbtn" onclick="showTab('metas')"><span class="ni">🎯</span>METAS</button>
+  <button class="nbtn" onclick="showTab('inventario')"><span class="ni">🎒</span>INV</button>
+  <button class="nbtn" onclick="showTab('pitstop')"><span class="ni">⏱️</span>PIT</button>
+  <button class="nbtn" onclick="showTab('talentos')"><span class="ni">🌟</span>TALENTO</button>
+  <button class="nbtn" onclick="showTab('rivales')"><span class="ni">⚔️</span>RIVAL</button>
+  <button class="nbtn" onclick="showTab('logros')"><span class="ni">🏆</span>LOGROS</button>
+  <button class="nbtn" onclick="showTab('destino')"><span class="ni">🚀</span>LEGACY</button>
+</nav>
 
-  <!-- ===== STATS SCREEN ===== -->
-  <div id="stats" class="screen active">
-    <div class="sec-title">Estadísticas de Temporada 2026</div>
+<!-- STATS -->
+<div id="stats" class="screen active">
+  <div class="stitle">Estadísticas Temporada 2026</div>
+  <div class="stats-grid">
+    <div class="scard" style="--ac:#ff2d2d"><div class="delta dup">▲+12%</div><span class="scard-icon">💻</span><div class="scard-lbl">PROGRAMACIÓN</div><div class="scard-big">72<span>/100</span></div><div class="sbar-wrap"><div class="sbar" style="width:72%"></div></div><div class="scard-sub">Python · Data · Web</div></div>
+    <div class="scard" style="--ac:#a855f7"><div class="delta dup">▲+8%</div><span class="scard-icon">🎵</span><div class="scard-lbl">MÚSICA</div><div class="scard-big">80<span>/100</span></div><div class="sbar-wrap"><div class="sbar" style="width:55%"></div></div><div class="scard-sub">Ritmo · Oído · Comp.</div></div>
+    <div class="scard" style="--ac:#00e5ff"><div class="delta dup">▲+15%</div><span class="scard-icon">🎮</span><div class="scard-lbl">VIDEOJUEGOS</div><div class="scard-big">50<span>/100</span></div><div class="sbar-wrap"><div class="sbar" style="width:88%"></div></div><div class="scard-sub">Sim Racing · Estrategia</div></div>
+    <div class="scard" style="--ac:#ff6b00"><div class="delta dup">▲+20%</div><span class="scard-icon">🏎️</span><div class="scard-lbl">MECÁNICA F1</div><div class="scard-big">38<span>/100</span></div><div class="sbar-wrap"><div class="sbar" style="width:38%"></div></div><div class="scard-sub">Aprendiendo · Growing</div></div>
+    <div class="scard" style="--ac:#ffc107"><div class="delta dup">▲+5%</div><span class="scard-icon">🧠</span><div class="scard-lbl">ANÁLISIS</div><div class="scard-big">75<span>/100</span></div><div class="sbar-wrap"><div class="sbar" style="width:65%"></div></div><div class="scard-sub">Datos · Telemetría</div></div>
+    <div class="scard" style="--ac:#00ff88"><div class="delta dup">▲+10%</div><span class="scard-icon">🤝</span><div class="scard-lbl">EQUIPO</div><div class="scard-big">70<span>/100</span></div><div class="sbar-wrap"><div class="sbar" style="width:70%"></div></div><div class="scard-sub">Pit Lane · Comm.</div></div>
+  </div>
+  <div class="radar-wrap">
+    <div class="radar-title">🔵 PERFIL COMPLETO — Spider Chart</div>
+    <svg id="radarSVG" viewBox="0 0 240 220" width="100%" style="max-width:260px;display:block;margin:0 auto">
+      <defs><radialGradient id="rg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,45,45,0.25)"/><stop offset="100%" stop-color="rgba(255,107,0,0.04)"/></radialGradient></defs>
+      <circle cx="120" cy="110" r="80" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+      <circle cx="120" cy="110" r="60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+      <circle cx="120" cy="110" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+      <circle cx="120" cy="110" r="20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+      <line x1="120" y1="30" x2="120" y2="190" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+      <line x1="40" y1="70" x2="200" y2="150" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+      <line x1="40" y1="150" x2="200" y2="70" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+      <polygon id="radarPoly" points="" fill="url(#rg)" stroke="#ff2d2d" stroke-width="2" opacity="0.9"/>
+      <text x="120" y="22" text-anchor="middle" fill="rgba(240,240,255,0.55)" font-size="9" font-family="Rajdhani">PROG</text>
+      <text x="210" y="65" text-anchor="start" fill="rgba(240,240,255,0.55)" font-size="9" font-family="Rajdhani">MÚSICA</text>
+      <text x="210" y="158" text-anchor="start" fill="rgba(240,240,255,0.55)" font-size="9" font-family="Rajdhani">GAMES</text>
+      <text x="120" y="206" text-anchor="middle" fill="rgba(240,240,255,0.55)" font-size="9" font-family="Rajdhani">MECÁNICA</text>
+      <text x="28" y="158" text-anchor="end" fill="rgba(240,240,255,0.55)" font-size="9" font-family="Rajdhani">ANÁLISIS</text>
+      <text x="28" y="65" text-anchor="end" fill="rgba(240,240,255,0.55)" font-size="9" font-family="Rajdhani">EQUIPO</text>
+    </svg>
+  </div>
+</div>
 
-    <div class="stats-grid">
-      <div class="stat-card" style="--accent-color:#ff2d2d">
-        <div class="delta-badge delta-up">▲ +12%</div>
-        <span class="stat-icon">💻</span>
-        <div class="stat-label">PROGRAMACIÓN</div>
-        <div class="stat-big">70<span>/ 100</span></div>
-        <div class="stat-bar-wrap"><div class="stat-bar" style="width:72%"></div></div>
-        <div class="stat-sub">Python · Web · Data Analysis</div>
-      </div>
-      <div class="stat-card" style="--accent-color:#a855f7">
-        <div class="delta-badge delta-up">▲ +8%</div>
-        <span class="stat-icon">🎵</span>
-        <div class="stat-label">MÚSICA</div>
-        <div class="stat-big">100<span>/ 100</span></div>
-        <div class="stat-bar-wrap"><div class="stat-bar" style="width:55%"></div></div>
-        <div class="stat-sub">Composición · Ritmo · Oído</div>
-      </div>
-      <div class="stat-card" style="--accent-color:#00e5ff">
-        <div class="delta-badge delta-up">▲ +15%</div>
-        <span class="stat-icon">🎮</span>
-        <div class="stat-label">VIDEOJUEGOS</div>
-        <div class="stat-big">50<span>/ 100</span></div>
-        <div class="stat-bar-wrap"><div class="stat-bar" style="width:88%"></div></div>
-        <div class="stat-sub">Estrategia · Reflejos · Sim Racing</div>
-      </div>
-      <div class="stat-card" style="--accent-color:#ff6b00">
-        <div class="delta-badge delta-up">▲ +20%</div>
-        <span class="stat-icon">🏎️</span>
-        <div class="stat-label">MECÁNICA F1</div>
-        <div class="stat-big">30<span>/ 100</span></div>
-        <div class="stat-bar-wrap"><div class="stat-bar" style="width:38%"></div></div>
-        <div class="stat-sub">Aprendiendo · Creciendo</div>
-      </div>
-      <div class="stat-card" style="--accent-color:#ffc107">
-        <div class="delta-badge delta-up">▲ +5%</div>
-        <span class="stat-icon">🧠</span>
-        <div class="stat-label">ANÁLISIS</div>
-        <div class="stat-big">70<span>/ 100</span></div>
-        <div class="stat-bar-wrap"><div class="stat-bar" style="width:65%"></div></div>
-        <div class="stat-sub">Datos · Telemetría · Lógica</div>
-      </div>
-      <div class="stat-card" style="--accent-color:#00ff88">
-        <div class="delta-badge delta-up">▲ +10%</div>
-        <span class="stat-icon">🤝</span>
-        <div class="stat-label">TRABAJO EN EQUIPO</div>
-        <div class="stat-big">70<span>/ 100</span></div>
-        <div class="stat-bar-wrap"><div class="stat-bar" style="width:70%"></div></div>
-        <div class="stat-sub">Comunicación · Pit lane</div>
-      </div>
+<!-- VALORES -->
+<div id="valores" class="screen">
+  <div class="stitle">Núcleo del piloto</div>
+  <div class="vcard" style="--vc:#ff2d2d" onclick="fireValue(this,'honestidad',50)">
+    <div class="vic" style="background:rgba(255,45,45,0.1);border-color:rgba(255,45,45,0.3)">💎</div>
+    <div style="flex:1">
+      <div class="vname">HONESTIDAD</div>
+      <div class="vdesc">La verdad es tu ventaja competitiva. En el pit lane no hay espacio para mentiras — un error admitido a tiempo puede salvar una carrera.</div>
+      <div class="vxprow"><div class="vbar-wrap"><div class="vbar" data-w="80" style="width:0%"></div></div><span class="vxplbl">80 XP</span></div>
     </div>
+    <button class="eqbtn" data-key="honestidad">EQUIPAR</button>
+  </div>
+  <div class="vcard" style="--vc:#a855f7" onclick="fireValue(this,'creatividad',60)">
+    <div class="vic" style="background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.3)">🎨</div>
+    <div style="flex:1">
+      <div class="vname">CREATIVIDAD</div>
+      <div class="vdesc">Las soluciones imposibles las encuentran mentes creativas. Combinar música, código y mecánica es tu firma única en el paddock.</div>
+      <div class="vxprow"><div class="vbar-wrap"><div class="vbar" data-w="90" style="width:0%;background:#a855f7"></div></div><span class="vxplbl">90 XP</span></div>
+    </div>
+    <button class="eqbtn" data-key="creatividad">EQUIPAR</button>
+  </div>
+  <div class="vcard" style="--vc:#ffc107" onclick="fireValue(this,'lealtad',55)">
+    <div class="vic" style="background:rgba(255,193,7,0.1);border-color:rgba(255,193,7,0.3)">🔰</div>
+    <div style="flex:1">
+      <div class="vname">LEALTAD</div>
+      <div class="vdesc">En F1 el equipo lo es todo. La lealtad a tus compañeros, tu familia y tus principios es lo que diferencia a un gran mecánico.</div>
+      <div class="vxprow"><div class="vbar-wrap"><div class="vbar" data-w="70" style="width:0%;background:#ffc107"></div></div><span class="vxplbl">70 XP</span></div>
+    </div>
+    <button class="eqbtn" data-key="lealtad">EQUIPAR</button>
+  </div>
+  <div style="background:rgba(255,45,45,0.04);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;font-size:10px;color:var(--text3);line-height:1.6;font-family:var(--hud);letter-spacing:.04em">
+    ⚡ Equipa tus valores para activarlos y ganar XP. Cada valor equipado refuerza tu perfil de piloto.
+  </div>
+</div>
 
-    <!-- RADAR -->
-    <div class="radar-wrap">
-      <div class="radar-title">🔵 PERFIL PILOTO — Temporada actual</div>
-      <svg id="radar-svg" viewBox="0 0 240 220" width="240" height="220">
-        <defs>
-          <radialGradient id="radarGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="rgba(255,45,45,0.25)"/>
-            <stop offset="100%" stop-color="rgba(255,107,0,0.05)"/>
-          </radialGradient>
-        </defs>
-        <!-- Grid circles -->
-        <circle cx="120" cy="110" r="80" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-        <circle cx="120" cy="110" r="60" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-        <circle cx="120" cy="110" r="40" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-        <circle cx="120" cy="110" r="20" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-        <!-- Axes -->
-        <line x1="120" y1="30"  x2="120" y2="190" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <line x1="40"  y1="70"  x2="200" y2="150" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <line x1="40"  y1="150" x2="200" y2="70"  stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-        <!-- Data polygon: Prog72 Música55 Games88 Mecánica38 Análisis65 Equipo70 -->
-        <polygon id="radarPoly" points="" fill="url(#radarGrad)" stroke="#ff2d2d" stroke-width="2" opacity="0.9"/>
-        <!-- Labels -->
-        <text x="120" y="22"  text-anchor="middle" fill="rgba(240,240,255,0.6)" font-size="9" font-family="Rajdhani">PROG</text>
-        <text x="210" y="65"  text-anchor="start"  fill="rgba(240,240,255,0.6)" font-size="9" font-family="Rajdhani">MÚSICA</text>
-        <text x="210" y="158" text-anchor="start"  fill="rgba(240,240,255,0.6)" font-size="9" font-family="Rajdhani">GAMES</text>
-        <text x="120" y="206" text-anchor="middle" fill="rgba(240,240,255,0.6)" font-size="9" font-family="Rajdhani">MECÁNICA</text>
-        <text x="28"  y="158" text-anchor="end"    fill="rgba(240,240,255,0.6)" font-size="9" font-family="Rajdhani">ANÁLISIS</text>
-        <text x="28"  y="65"  text-anchor="end"    fill="rgba(240,240,255,0.6)" font-size="9" font-family="Rajdhani">EQUIPO</text>
-      </svg>
+<!-- MOTOR / ENGINE TREE -->
+<div id="motor" class="screen">
+  <div class="stitle">Árbol de Habilidades — Motor V6</div>
+  <div class="eng-container">
+    <div class="eng-title">TAP UN CILINDRO PARA VER LA HABILIDAD</div>
+    <svg id="engSVG" viewBox="0 0 440 380" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="gr"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="gs"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <linearGradient id="pg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(255,45,45,0.6)"/><stop offset="50%" stop-color="rgba(255,107,0,0.8)"/><stop offset="100%" stop-color="rgba(255,193,7,0.6)"/></linearGradient>
+        <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a2a50"/><stop offset="100%" stop-color="#14142a"/></linearGradient>
+        <linearGradient id="ng1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff2d2d"/><stop offset="100%" stop-color="#ff6b00"/></linearGradient>
+        <linearGradient id="ng2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>
+        <linearGradient id="ng3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#0099cc"/></linearGradient>
+      </defs>
+      <rect x="130" y="120" width="180" height="140" rx="10" fill="url(#bg2)" stroke="rgba(255,45,45,0.3)" stroke-width="1.5"/>
+      <rect x="140" y="130" width="160" height="120" rx="6" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <text x="220" y="175" text-anchor="middle" font-family="Orbitron" font-size="11" font-weight="700" fill="rgba(255,45,45,0.5)" letter-spacing="3">F1</text>
+      <text x="220" y="191" text-anchor="middle" font-family="Orbitron" font-size="8" fill="rgba(255,255,255,0.18)" letter-spacing="2">HYBRID V6</text>
+      <text x="220" y="207" text-anchor="middle" font-family="Orbitron" font-size="7" fill="rgba(255,255,255,0.12)" letter-spacing="1">1600cc TURBO</text>
+      <circle cx="145" cy="135" r="4" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <circle cx="295" cy="135" r="4" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <circle cx="145" cy="245" r="4" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <circle cx="295" cy="245" r="4" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <rect x="155" y="260" width="13" height="38" rx="3" fill="rgba(255,45,45,0.14)" stroke="rgba(255,45,45,0.28)" stroke-width="1"/>
+      <rect x="177" y="260" width="13" height="38" rx="3" fill="rgba(255,45,45,0.14)" stroke="rgba(255,45,45,0.28)" stroke-width="1"/>
+      <rect x="250" y="260" width="13" height="38" rx="3" fill="rgba(255,45,45,0.14)" stroke="rgba(255,45,45,0.28)" stroke-width="1"/>
+      <rect x="272" y="260" width="13" height="38" rx="3" fill="rgba(255,45,45,0.14)" stroke="rgba(255,45,45,0.28)" stroke-width="1"/>
+      <ellipse cx="161" cy="298" rx="7" ry="3" fill="rgba(255,107,0,0.3)" filter="url(#gs)"/>
+      <ellipse cx="183" cy="298" rx="7" ry="3" fill="rgba(255,107,0,0.3)" filter="url(#gs)"/>
+      <ellipse cx="256" cy="298" rx="7" ry="3" fill="rgba(255,107,0,0.3)" filter="url(#gs)"/>
+      <ellipse cx="278" cy="298" rx="7" ry="3" fill="rgba(255,107,0,0.3)" filter="url(#gs)"/>
+      <path d="M162 120 L162 82" stroke="rgba(255,255,255,0.13)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M184 120 L184 82" stroke="rgba(255,255,255,0.13)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M256 120 L256 82" stroke="rgba(255,255,255,0.13)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M278 120 L278 82" stroke="rgba(255,255,255,0.13)" stroke-width="7" stroke-linecap="round"/>
+      <rect x="142" y="74" width="156" height="14" rx="4" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <line x1="130" y1="155" x2="78" y2="78" stroke="url(#pg)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.55"/>
+      <line x1="130" y1="190" x2="52" y2="190" stroke="url(#pg)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.55"/>
+      <line x1="130" y1="225" x2="78" y2="308" stroke="url(#pg)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.55"/>
+      <line x1="310" y1="155" x2="362" y2="78" stroke="url(#pg)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.55"/>
+      <line x1="310" y1="190" x2="388" y2="190" stroke="url(#pg)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.55"/>
+      <line x1="310" y1="225" x2="362" y2="308" stroke="url(#pg)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.55"/>
+      <!-- nodes -->
+      <g class="eng-node" onclick="selectSkill('prog')" id="node-prog">
+        <circle cx="68" cy="66" r="30" fill="url(#ng1)" opacity="0.9" filter="url(#gr)"/>
+        <circle cx="68" cy="66" r="26" fill="rgba(20,20,40,0.82)"/>
+        <circle cx="68" cy="66" r="24" fill="none" stroke="rgba(255,45,45,0.4)" stroke-width="1"/>
+        <text x="68" y="60" text-anchor="middle" font-size="15">💻</text>
+        <text x="68" y="76" text-anchor="middle" font-family="Orbitron" font-size="6" fill="#ff8080">PROG</text>
+        <text x="68" y="86" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#ff5f5f">LV6</text>
+      </g>
+      <g class="eng-node" onclick="selectSkill('analisis')" id="node-analisis">
+        <circle cx="40" cy="190" r="30" fill="#1a1a40" opacity="0.96"/>
+        <circle cx="40" cy="190" r="24" fill="none" stroke="rgba(255,107,0,0.5)" stroke-width="1.5"/>
+        <text x="40" y="184" text-anchor="middle" font-size="15">🧠</text>
+        <text x="40" y="200" text-anchor="middle" font-family="Orbitron" font-size="5.5" fill="#ff8f5f">ANÁLISIS</text>
+        <text x="40" y="210" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#ff8f5f">LV5</text>
+      </g>
+      <g class="eng-node" onclick="selectSkill('lealtad')" id="node-lealtad">
+        <circle cx="68" cy="318" r="30" fill="#1a1a40" opacity="0.96"/>
+        <circle cx="68" cy="318" r="24" fill="none" stroke="rgba(255,193,7,0.5)" stroke-width="1.5"/>
+        <text x="68" y="312" text-anchor="middle" font-size="15">🔰</text>
+        <text x="68" y="328" text-anchor="middle" font-family="Orbitron" font-size="6" fill="#ffcc44">LEALTAD</text>
+        <text x="68" y="338" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#ffcc44">LV7</text>
+      </g>
+      <g class="eng-node" onclick="selectSkill('musica')" id="node-musica">
+        <circle cx="372" cy="66" r="30" fill="url(#ng2)" opacity="0.9"/>
+        <circle cx="372" cy="66" r="26" fill="rgba(20,20,40,0.82)"/>
+        <circle cx="372" cy="66" r="24" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="1"/>
+        <text x="372" y="60" text-anchor="middle" font-size="15">🎵</text>
+        <text x="372" y="76" text-anchor="middle" font-family="Orbitron" font-size="6" fill="#c084fc">MÚSICA</text>
+        <text x="372" y="86" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#c084fc">LV5</text>
+      </g>
+      <g class="eng-node" onclick="selectSkill('games')" id="node-games">
+        <circle cx="400" cy="190" r="30" fill="url(#ng3)" opacity="0.9"/>
+        <circle cx="400" cy="190" r="26" fill="rgba(20,20,40,0.82)"/>
+        <circle cx="400" cy="190" r="24" fill="none" stroke="rgba(0,229,255,0.5)" stroke-width="1"/>
+        <text x="400" y="184" text-anchor="middle" font-size="15">🎮</text>
+        <text x="400" y="200" text-anchor="middle" font-family="Orbitron" font-size="6" fill="#67e8f9">GAMES</text>
+        <text x="400" y="210" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#67e8f9">LV7</text>
+      </g>
+      <g class="eng-node" onclick="selectSkill('mecanica')" id="node-mecanica">
+        <circle cx="372" cy="318" r="30" fill="#1a1a40" opacity="0.96"/>
+        <circle cx="372" cy="318" r="24" fill="none" stroke="rgba(255,107,0,0.5)" stroke-width="1.5"/>
+        <circle cx="372" cy="318" r="32" fill="none" stroke="rgba(255,107,0,0.18)" stroke-width="1"><animate attributeName="r" values="30;38;30" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".4;0;.4" dur="2s" repeatCount="indefinite"/></circle>
+        <text x="372" y="312" text-anchor="middle" font-size="15">🏎️</text>
+        <text x="372" y="328" text-anchor="middle" font-family="Orbitron" font-size="5.5" fill="#ff9f5f">MECÁNICA</text>
+        <text x="372" y="338" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#ff9f5f">LV3</text>
+      </g>
+      <text x="220" y="358" text-anchor="middle" font-family="Orbitron" font-size="7.5" fill="rgba(255,255,255,0.18)" letter-spacing="3">MOTOR DE VIDA V6</text>
+    </svg>
+  </div>
+  <div class="sip" id="sipPanel">
+    <div class="sip-head"><span class="sip-icon" id="sipIcon">💻</span><div><div class="sip-name" id="sipName">—</div><div class="sip-lvl" id="sipLvl">—</div></div></div>
+    <div class="sip-desc" id="sipDesc">—</div>
+    <div class="sip-bw"><div class="sip-bf" id="sipBar" style="width:0%"></div></div>
+    <div class="sip-xp" id="sipXp">—</div>
+  </div>
+</div>
+
+<!-- DECISIONES -->
+<div id="decisiones" class="screen">
+  <div class="stitle">Centro de Decisiones</div>
+  <div id="decContainer"></div>
+</div>
+
+<!-- METAS -->
+<div id="metas" class="screen">
+  <div class="stitle">Misiones de Carrera 2026</div>
+  <div class="qcard" id="q1"><div class="qi qred">🏎️</div><div style="flex:1"><div class="qtitle">MECÁNICO DE FÓRMULA 1</div><div class="qdesc">Llegar a trabajar en el pit lane de un equipo de F1. La meta que define toda la temporada.</div><div class="qpw"><div class="qpb" style="width:15%"></div></div><div class="qrew">⚡ MISIÓN PRINCIPAL · 15% · +200 XP</div></div><button class="cbtn" onclick="completeQuest('q1',200)">✓</button></div>
+  <div class="qcard" id="q2"><div class="qi qblue">🎓</div><div style="flex:1"><div class="qtitle">FORMACIÓN TÉCNICA</div><div class="qdesc">Estudiar mecánica y electrónica de competición. Combinar con programación para telemetría.</div><div class="qpw"><div class="qpb" style="width:30%"></div></div><div class="qrew">⚡ SUB-MISIÓN · 30% · +80 XP</div></div><button class="cbtn" onclick="completeQuest('q2',80)">✓</button></div>
+  <div class="qcard" id="q3"><div class="qi qgreen">🌍</div><div style="flex:1"><div class="qtitle">CONECTAR CON LA COMUNIDAD F1</div><div class="qdesc">Redes, eventos, simuladores y contactos del mundo del automovilismo de alto rendimiento.</div><div class="qpw"><div class="qpb" style="width:20%"></div></div><div class="qrew">⚡ SUB-MISIÓN · 20% · +60 XP</div></div><button class="cbtn" onclick="completeQuest('q3',60)">✓</button></div>
+  <div class="qcard" id="q4"><div class="qi qamber">🏆</div><div style="flex:1"><div class="qtitle">PRIMER TRABAJO EN AUTOMOVILISMO</div><div class="qdesc">Karting, Fórmula Regional o cualquier serie. El primer sello en la licencia de carrera.</div><div class="qpw"><div class="qpb" style="width:5%"></div></div><div class="qrew">⚡ SUB-MISIÓN · 5% · +70 XP</div></div><button class="cbtn" onclick="completeQuest('q4',70)">✓</button></div>
+  <div class="qcard" id="q5"><div class="qi qblue">💻</div><div style="flex:1"><div class="qtitle">PROYECTO DE TELEMETRÍA PERSONAL</div><div class="qdesc">Crear sistema de análisis de datos de carrera usando programación. Tu carta de presentación.</div><div class="qpw"><div class="qpb" style="width:40%"></div></div><div class="qrew">⚡ SUB-MISIÓN · 40% · +90 XP</div></div><button class="cbtn" onclick="completeQuest('q5',90)">✓</button></div>
+</div>
+
+<!-- INVENTARIO -->
+<div id="inventario" class="screen">
+  <div class="stitle">Inventario del Piloto</div>
+  <div class="inv-hint">TOCA UN ÍTEM PARA COMPRAR/EQUIPAR — COSTO EN XP</div>
+  <div style="margin-bottom:10px"></div>
+  <div class="inv-grid" id="invGrid"></div>
+</div>
+
+<!-- PIT STOP -->
+<div id="pitstop" class="screen">
+  <div class="stitle">Mini-Juego — Pit Stop</div>
+  <div class="pit-wrap">
+    <div class="pit-title">⏱️ PIT STOP CHALLENGE</div>
+    <div class="pit-sub">Presiona las teclas en el orden correcto antes de que el tiempo se agote. Más rápido = más XP.</div>
+    <div class="pit-timer" id="pitTimer">3.0</div>
+    <div class="pit-seq" id="pitSeq"></div>
+    <button class="pit-startbtn" id="pitStart" onclick="startPit()">INICIAR PIT STOP</button>
+    <div class="pit-result" id="pitResult"></div>
+    <div class="pit-board" id="pitBoard">
+      <div class="pit-board-title">MEJORES TIEMPOS</div>
+      <div id="pitBoardRows"></div>
     </div>
   </div>
+</div>
 
-  <!-- ===== VALORES SCREEN ===== -->
-  <div id="valores" class="screen">
-    <div class="sec-title">Núcleo del piloto</div>
-
-    <div class="val-card" style="--c:#ff2d2d" onclick="fireValue(this,'honestidad',50)">
-      <div class="val-icon-wrap" style="background:rgba(255,45,45,0.1);border-color:rgba(255,45,45,0.3)">💎</div>
-      <div style="flex:1">
-        <div class="val-name">HONESTIDAD</div>
-        <div class="val-desc">La verdad es tu ventaja competitiva. En el pit lane no hay espacio para mentiras — un error admitido a tiempo puede salvar una carrera.</div>
-        <div class="val-xp-row">
-          <div class="val-xp-bar-wrap"><div class="val-xp-bar" data-w="80" style="width:0%"></div></div>
-          <span class="val-xp-lbl">80 XP</span>
-        </div>
-      </div>
-      <button class="equip-btn" data-key="honestidad">EQUIPAR</button>
-    </div>
-
-    <div class="val-card" style="--c:#a855f7" onclick="fireValue(this,'creatividad',60)">
-      <div class="val-icon-wrap" style="background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.3)">🎨</div>
-      <div style="flex:1">
-        <div class="val-name">CREATIVIDAD</div>
-        <div class="val-desc">Las soluciones imposibles las encuentran mentes creativas. Combinar música, código y mecánica es tu firma única en el paddock.</div>
-        <div class="val-xp-row">
-          <div class="val-xp-bar-wrap"><div class="val-xp-bar" data-w="90" style="width:0%"></div></div>
-          <span class="val-xp-lbl">90 XP</span>
-        </div>
-      </div>
-      <button class="equip-btn" data-key="creatividad">EQUIPAR</button>
-    </div>
-
-    <div class="val-card" style="--c:#ffc107" onclick="fireValue(this,'lealtad',55)">
-      <div class="val-icon-wrap" style="background:rgba(255,193,7,0.1);border-color:rgba(255,193,7,0.3)">🔰</div>
-      <div style="flex:1">
-        <div class="val-name">LEALTAD</div>
-        <div class="val-desc">En F1 el equipo lo es todo. La lealtad a tus compañeros, a tu familia y a tus principios es lo que diferencia a un gran mecánico.</div>
-        <div class="val-xp-row">
-          <div class="val-xp-bar-wrap"><div class="val-xp-bar" data-w="70" style="width:0%"></div></div>
-          <span class="val-xp-lbl">70 XP</span>
-        </div>
-      </div>
-      <button class="equip-btn" data-key="lealtad">EQUIPAR</button>
-    </div>
-
-    <div style="background:rgba(255,45,45,0.04);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--text3);line-height:1.6;">
-      ⚡ Equipa tus valores para activarlos y ganar XP de carrera. Cada valor equipado refuerza tu perfil de piloto.
-    </div>
+<!-- TALENTOS -->
+<div id="talentos" class="screen">
+  <div class="stitle">Árbol de Talentos — Elige tu Especialización</div>
+  <div style="background:rgba(255,193,7,0.06);border:1px solid rgba(255,193,7,0.25);border-radius:var(--r);padding:10px 12px;font-size:10px;color:var(--text2);line-height:1.6;margin-bottom:12px;font-family:var(--hud);letter-spacing:.04em">
+    ⚠️ Los talentos cuestan XP y son permanentes. Elige tu especialización sabiamente — no puedes tener todo.
   </div>
+  <div class="talent-grid" id="talentGrid"></div>
+</div>
 
-  <!-- ===== ENGINE TREE SCREEN ===== -->
-  <div id="engine" class="screen">
-    <div class="sec-title">Árbol de habilidades — Motor V6</div>
-    <div class="engine-container">
-      <div class="engine-title">TAP UN CILINDRO PARA VER LA HABILIDAD</div>
-      <svg id="engineSVG" viewBox="0 0 440 380" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <filter id="glow-red"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <filter id="glow-soft"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <linearGradient id="pipGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="rgba(255,45,45,0.6)"/>
-            <stop offset="50%" stop-color="rgba(255,107,0,0.8)"/>
-            <stop offset="100%" stop-color="rgba(255,193,7,0.6)"/>
-          </linearGradient>
-          <linearGradient id="blockGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#2a2a50"/>
-            <stop offset="100%" stop-color="#14142a"/>
-          </linearGradient>
-          <linearGradient id="nodeGrad1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#ff2d2d"/>
-            <stop offset="100%" stop-color="#ff6b00"/>
-          </linearGradient>
-          <linearGradient id="nodeGrad2" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#a855f7"/>
-            <stop offset="100%" stop-color="#7c3aed"/>
-          </linearGradient>
-          <linearGradient id="nodeGrad3" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#00e5ff"/>
-            <stop offset="100%" stop-color="#0099cc"/>
-          </linearGradient>
-        </defs>
-
-        <!-- ENGINE BLOCK (central body) -->
-        <rect x="130" y="120" width="180" height="140" rx="10" fill="url(#blockGrad)" stroke="rgba(255,45,45,0.3)" stroke-width="1.5"/>
-        <rect x="140" y="130" width="160" height="120" rx="6" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-        <!-- Engine logo -->
-        <text x="220" y="175" text-anchor="middle" font-family="Orbitron" font-size="11" font-weight="700" fill="rgba(255,45,45,0.5)" letter-spacing="3">F1</text>
-        <text x="220" y="192" text-anchor="middle" font-family="Orbitron" font-size="8" fill="rgba(255,255,255,0.2)" letter-spacing="2">HYBRID V6</text>
-        <text x="220" y="208" text-anchor="middle" font-family="Orbitron" font-size="8" fill="rgba(255,255,255,0.15)" letter-spacing="1">1600cc</text>
-        <!-- Bolt details -->
-        <circle cx="145" cy="135" r="4" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-        <circle cx="295" cy="135" r="4" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-        <circle cx="145" cy="245" r="4" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-        <circle cx="295" cy="245" r="4" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-
-        <!-- EXHAUST PIPES (bottom) -->
-        <rect x="155" y="260" width="14" height="40" rx="3" fill="rgba(255,45,45,0.15)" stroke="rgba(255,45,45,0.3)" stroke-width="1"/>
-        <rect x="178" y="260" width="14" height="40" rx="3" fill="rgba(255,45,45,0.15)" stroke="rgba(255,45,45,0.3)" stroke-width="1"/>
-        <rect x="248" y="260" width="14" height="40" rx="3" fill="rgba(255,45,45,0.15)" stroke="rgba(255,45,45,0.3)" stroke-width="1"/>
-        <rect x="271" y="260" width="14" height="40" rx="3" fill="rgba(255,45,45,0.15)" stroke="rgba(255,45,45,0.3)" stroke-width="1"/>
-        <!-- exhaust glow -->
-        <ellipse cx="162" cy="300" rx="8" ry="4" fill="rgba(255,107,0,0.3)" filter="url(#glow-soft)"/>
-        <ellipse cx="185" cy="300" rx="8" ry="4" fill="rgba(255,107,0,0.3)" filter="url(#glow-soft)"/>
-        <ellipse cx="255" cy="300" rx="8" ry="4" fill="rgba(255,107,0,0.3)" filter="url(#glow-soft)"/>
-        <ellipse cx="278" cy="300" rx="8" ry="4" fill="rgba(255,107,0,0.3)" filter="url(#glow-soft)"/>
-
-        <!-- INTAKE PIPES (top) -->
-        <path d="M162 120 L162 80" stroke="rgba(255,255,255,0.15)" stroke-width="8" stroke-linecap="round"/>
-        <path d="M185 120 L185 80" stroke="rgba(255,255,255,0.15)" stroke-width="8" stroke-linecap="round"/>
-        <path d="M255 120 L255 80" stroke="rgba(255,255,255,0.15)" stroke-width="8" stroke-linecap="round"/>
-        <path d="M278 120 L278 80" stroke="rgba(255,255,255,0.15)" stroke-width="8" stroke-linecap="round"/>
-        <!-- intake manifold -->
-        <rect x="140" y="72" width="160" height="16" rx="4" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-
-        <!-- CONNECTING LINES to skill nodes -->
-        <!-- Left nodes -->
-        <line x1="130" y1="155" x2="78" y2="80"  stroke="url(#pipGrad)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-        <line x1="130" y1="190" x2="55" y2="190" stroke="url(#pipGrad)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-        <line x1="130" y1="225" x2="78" y2="305" stroke="url(#pipGrad)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-        <!-- Right nodes -->
-        <line x1="310" y1="155" x2="362" y2="80"  stroke="url(#pipGrad)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-        <line x1="310" y1="190" x2="385" y2="190" stroke="url(#pipGrad)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-        <line x1="310" y1="225" x2="362" y2="305" stroke="url(#pipGrad)" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-
-        <!-- SKILL NODES — LEFT BANK -->
-        <!-- Node 1: Programación -->
-        <g class="eng-node" onclick="selectSkill('prog')" id="node-prog">
-          <circle cx="68" cy="68" r="30" fill="url(#nodeGrad1)" opacity="0.9" filter="url(#glow-red)"/>
-          <circle cx="68" cy="68" r="26" fill="rgba(20,20,40,0.8)"/>
-          <circle cx="68" cy="68" r="24" fill="none" stroke="rgba(255,45,45,0.4)" stroke-width="1"/>
-          <text x="68" y="62" text-anchor="middle" font-size="16">💻</text>
-          <text x="68" y="78" text-anchor="middle" font-family="Orbitron" font-size="6" fill="#ff8080" letter-spacing="0.5">PROG</text>
-          <text x="68" y="88" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#ff5f5f">LV6</text>
-        </g>
-
-        <!-- Node 2: Análisis -->
-        <g class="eng-node" onclick="selectSkill('analisis')" id="node-analisis">
-          <circle cx="42" cy="190" r="30" fill="#1a1a40" opacity="0.95"/>
-          <circle cx="42" cy="190" r="24" fill="none" stroke="rgba(255,107,0,0.5)" stroke-width="1.5"/>
-          <text x="42" y="184" text-anchor="middle" font-size="16">🧠</text>
-          <text x="42" y="200" text-anchor="middle" font-family="Orbitron" font-size="6" fill="#ff8f5f" letter-spacing="0.5">ANÁLISIS</text>
-          <text x="42" y="210" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#ff8f5f">LV5</text>
-        </g>
-
-        <!-- Node 3: Lealtad -->
-        <g class="eng-node" onclick="selectSkill('lealtad')" id="node-lealtad">
-          <circle cx="68" cy="316" r="30" fill="#1a1a40" opacity="0.95"/>
-          <circle cx="68" cy="316" r="24" fill="none" stroke="rgba(255,193,7,0.5)" stroke-width="1.5"/>
-          <text x="68" y="310" text-anchor="middle" font-size="16">🔰</text>
-          <text x="68" y="326" text-anchor="middle" font-family="Orbitron" font-size="6" fill="#ffcc44" letter-spacing="0.5">LEALTAD</text>
-          <text x="68" y="336" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#ffcc44">LV7</text>
-        </g>
-
-        <!-- SKILL NODES — RIGHT BANK -->
-        <!-- Node 4: Música -->
-        <g class="eng-node" onclick="selectSkill('musica')" id="node-musica">
-          <circle cx="372" cy="68" r="30" fill="url(#nodeGrad2)" opacity="0.9"/>
-          <circle cx="372" cy="68" r="26" fill="rgba(20,20,40,0.8)"/>
-          <circle cx="372" cy="68" r="24" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="1"/>
-          <text x="372" y="62" text-anchor="middle" font-size="16">🎵</text>
-          <text x="372" y="78" text-anchor="middle" font-family="Orbitron" font-size="6" fill="#c084fc" letter-spacing="0.5">MÚSICA</text>
-          <text x="372" y="88" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#c084fc">LV5</text>
-        </g>
-
-        <!-- Node 5: Videojuegos -->
-        <g class="eng-node" onclick="selectSkill('games')" id="node-games">
-          <circle cx="398" cy="190" r="30" fill="url(#nodeGrad3)" opacity="0.9"/>
-          <circle cx="398" cy="190" r="26" fill="rgba(20,20,40,0.8)"/>
-          <circle cx="398" cy="190" r="24" fill="none" stroke="rgba(0,229,255,0.5)" stroke-width="1"/>
-          <text x="398" y="184" text-anchor="middle" font-size="16">🎮</text>
-          <text x="398" y="200" text-anchor="middle" font-family="Orbitron" font-size="6" fill="#67e8f9" letter-spacing="0.5">GAMES</text>
-          <text x="398" y="210" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#67e8f9">LV7</text>
-        </g>
-
-        <!-- Node 6: Mecánica F1 -->
-        <g class="eng-node" onclick="selectSkill('mecanica')" id="node-mecanica">
-          <circle cx="372" cy="316" r="30" fill="#1a1a40" opacity="0.95"/>
-          <circle cx="372" cy="316" r="24" fill="none" stroke="rgba(255,107,0,0.5)" stroke-width="1.5"/>
-          <!-- Animated pulse ring for the goal -->
-          <circle cx="372" cy="316" r="32" fill="none" stroke="rgba(255,107,0,0.2)" stroke-width="1">
-            <animate attributeName="r" values="30;38;30" dur="2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite"/>
-          </circle>
-          <text x="372" y="310" text-anchor="middle" font-size="16">🏎️</text>
-          <text x="372" y="326" text-anchor="middle" font-family="Orbitron" font-size="5.5" fill="#ff9f5f" letter-spacing="0.5">MECÁNICA</text>
-          <text x="372" y="336" text-anchor="middle" font-family="Orbitron" font-size="7" font-weight="700" fill="#ff9f5f">LV3</text>
-        </g>
-
-        <!-- CENTER CRANKSHAFT LABEL -->
-        <text x="220" y="355" text-anchor="middle" font-family="Orbitron" font-size="8" fill="rgba(255,255,255,0.2)" letter-spacing="3">MOTOR DE VIDA V6</text>
-      </svg>
+<!-- RIVALES -->
+<div id="rivales" class="screen">
+  <div class="stitle">Clasificación — Rivales de Carrera</div>
+  <div class="my-pos-bar" id="myPosBar">
+    <div style="font-size:28px">🧑‍🔧</div>
+    <div style="flex:1">
+      <div style="font-family:var(--hud);font-size:11px;color:var(--green);font-weight:700">TÚ — DRIVER #01</div>
+      <div style="font-size:10px;color:var(--text2);margin-top:2px">Colombia · XP: <span id="myXpRival">340</span></div>
+      <div class="rival-bw" style="margin-top:6px"><div id="myRivalBar" class="rival-bf" style="background:var(--green);width:68%"></div></div>
     </div>
-
-    <div class="skill-info-panel" id="skillPanel">
-      <div class="sip-head">
-        <span class="sip-icon" id="sipIcon">💻</span>
-        <div>
-          <div class="sip-name" id="sipName">PROGRAMACIÓN</div>
-          <div class="sip-lvl" id="sipLvl">Nivel 6 · 720 / 1000 XP</div>
-        </div>
-      </div>
-      <div class="sip-desc" id="sipDesc">Tu habilidad técnica es la base.</div>
-      <div class="sip-bar-wrap"><div class="sip-bar" id="sipBar" style="width:0%"></div></div>
-      <div class="sip-xp" id="sipXp">720 / 1000 XP</div>
-    </div>
+    <div class="rival-pos" style="color:var(--green)" id="myPosNum">P?</div>
   </div>
+  <div id="rivalList"></div>
+</div>
 
-  <!-- ===== METAS SCREEN ===== -->
-  <div id="metas" class="screen">
-    <div class="sec-title">Misiones de carrera 2026</div>
+<!-- LOGROS -->
+<div id="logros" class="screen">
+  <div class="stitle">Sala de Trofeos</div>
+  <div class="ach-grid" id="achGrid"></div>
+</div>
 
-    <div class="quest-card" id="q1">
-      <div class="q-icon q-red">🏎️</div>
-      <div style="flex:1">
-        <div class="quest-title">MECÁNICO DE FÓRMULA 1</div>
-        <div class="quest-desc">Llegar a trabajar en el pit lane de un equipo de F1. La meta que define toda la temporada.</div>
-        <div class="quest-progress-wrap"><div class="quest-progress" style="width:15%"></div></div>
-        <div class="quest-reward">⚡ MISIÓN PRINCIPAL · 15% completado · +200 XP</div>
-      </div>
-      <button class="check-btn" onclick="completeQuest('q1',200)">✓</button>
-    </div>
-
-    <div class="quest-card" id="q2">
-      <div class="q-icon q-blue">🎓</div>
-      <div style="flex:1">
-        <div class="quest-title">FORMACIÓN TÉCNICA AUTOMOTRIZ</div>
-        <div class="quest-desc">Estudiar mecánica y electrónica de competición. Combinar con programación para telemetría.</div>
-        <div class="quest-progress-wrap"><div class="quest-progress" style="width:30%"></div></div>
-        <div class="quest-reward">⚡ SUB-MISIÓN · 30% completado · +80 XP</div>
-      </div>
-      <button class="check-btn" onclick="completeQuest('q2',80)">✓</button>
-    </div>
-
-    <div class="quest-card" id="q3">
-      <div class="q-icon q-green">🌍</div>
-      <div style="flex:1">
-        <div class="quest-title">CONECTAR CON LA COMUNIDAD F1</div>
-        <div class="quest-desc">Redes, eventos, simuladores y contactos del mundo del automovilismo de alto rendimiento.</div>
-        <div class="quest-progress-wrap"><div class="quest-progress" style="width:20%"></div></div>
-        <div class="quest-reward">⚡ SUB-MISIÓN · 20% completado · +60 XP</div>
-      </div>
-      <button class="check-btn" onclick="completeQuest('q3',60)">✓</button>
-    </div>
-
-    <div class="quest-card" id="q4">
-      <div class="q-icon q-amber">🏆</div>
-      <div style="flex:1">
-        <div class="quest-title">PRIMER TRABAJO EN AUTOMOVILISMO</div>
-        <div class="quest-desc">Karting, Fórmula Regional o cualquier serie. El primer sello en la licencia de carrera.</div>
-        <div class="quest-progress-wrap"><div class="quest-progress" style="width:5%"></div></div>
-        <div class="quest-reward">⚡ SUB-MISIÓN · 5% completado · +70 XP</div>
-      </div>
-      <button class="check-btn" onclick="completeQuest('q4',70)">✓</button>
-    </div>
-
-    <div class="quest-card" id="q5">
-      <div class="q-icon q-blue">💻</div>
-      <div style="flex:1">
-        <div class="quest-title">PROYECTO DE TELEMETRÍA PERSONAL</div>
-        <div class="quest-desc">Crear un sistema de análisis de datos de carrera usando programación. Tu carta de presentación técnica.</div>
-        <div class="quest-progress-wrap"><div class="quest-progress" style="width:40%"></div></div>
-        <div class="quest-reward">⚡ SUB-MISIÓN · 40% completado · +90 XP</div>
-      </div>
-      <button class="check-btn" onclick="completeQuest('q5',90)">✓</button>
-    </div>
+<!-- DESTINY -->
+<div id="destino" class="screen">
+  <div class="dest-hero">
+    <span class="dest-trophy">🌟</span>
+    <div class="dest-tag">DESTINO FINAL — TEMPORADA INFINITA</div>
+    <div class="dest-h1">Dejar una huella<br>en tu familia</div>
+    <div class="dest-sub">No se trata solo de llegar a la F1. Se trata de ser la historia que tu familia cuente con orgullo por generaciones.</div>
   </div>
-
-  <!-- ===== DESTINY / LEGACY SCREEN ===== -->
-  <div id="destino" class="screen">
-    <div class="dest-hero">
-      <span class="dest-trophy">🌟</span>
-      <div class="dest-tagline">DESTINO FINAL — TEMPORADA INFINITA</div>
-      <div class="dest-h1">Dejar una huella<br>en tu familia</div>
-      <div class="dest-sub">No se trata solo de llegar a la F1. Se trata de ser la historia que tu familia cuente con orgullo por generaciones.</div>
-    </div>
-
-    <div class="sec-title">Ruta hacia el legado</div>
-    <div class="timeline">
-
-      <div class="tl-step">
-        <div class="tl-dot" style="border-color:#ff2d2d; color:#ff2d2d;">1</div>
-        <div class="tl-card">
-          <div class="tl-title">CONSTRUIR EL CARÁCTER</div>
-          <div class="tl-desc">Honestidad, creatividad y lealtad como armadura. Los valores no son opcionales — son el combustible del motor.</div>
-          <div class="tl-year">📍 HOY · En progreso</div>
-        </div>
-      </div>
-
-      <div class="tl-step">
-        <div class="tl-dot" style="border-color:#ff6b00; color:#ff6b00;">2</div>
-        <div class="tl-card">
-          <div class="tl-title">DOMINAR LAS HABILIDADES ÚNICAS</div>
-          <div class="tl-desc">Programación + música + videojuegos = mente que ningún otro mecánico de F1 tiene. Esa combinación es tu ventaja diferencial.</div>
-          <div class="tl-year">📍 2026–2027 · Entrenamiento intensivo</div>
-        </div>
-      </div>
-
-      <div class="tl-step">
-        <div class="tl-dot" style="border-color:#ffc107; color:#ffc107;">3</div>
-        <div class="tl-card">
-          <div class="tl-title">FORMACIÓN TÉCNICA ESPECIALIZADA</div>
-          <div class="tl-desc">Mecánica de competición, electrónica, sistemas híbridos F1. Cada certificado es una vuelta rápida en la clasificación de tu carrera.</div>
-          <div class="tl-year">📍 2027–2029 · Academia técnica</div>
-        </div>
-      </div>
-
-      <div class="tl-step">
-        <div class="tl-dot" style="border-color:#00ff88; color:#00ff88;">4</div>
-        <div class="tl-card">
-          <div class="tl-title">PRIMER PIT LANE EN F1</div>
-          <div class="tl-desc">Llegar al paddock. Ese momento en que tu familia te vea en televisión durante una carrera será el punto de inflexión de la historia familiar.</div>
-          <div class="tl-year">📍 2029–2032 · La Gran Meta</div>
-        </div>
-      </div>
-
-      <div class="tl-step">
-        <div class="tl-dot" style="border-color:#00e5ff; color:#00e5ff;">5</div>
-        <div class="tl-card">
-          <div class="tl-title">DEJAR LA HUELLA PERMANENTE</div>
-          <div class="tl-desc">Tu historia vive en las próximas generaciones. Eres la prueba de que desde Colombia se puede llegar al más alto nivel del automovilismo mundial.</div>
-          <div class="tl-year">📍 LEGADO ETERNO · Para siempre</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="legacy-quote">
-      "Las huellas que dejas no son las de tus zapatos sino las de tus decisiones. Cada valor que vives, cada línea de código que escribes, cada nota que tocas y cada vuelta en el simulador escribe el legado que tu familia recordará cuando no estés."
-    </div>
+  <div class="stitle">Ruta hacia el legado</div>
+  <div class="timeline">
+    <div class="tlstep"><div class="tldot" style="border-color:#ff2d2d;color:#ff2d2d">1</div><div class="tlcard"><div class="tltitle">CONSTRUIR EL CARÁCTER</div><div class="tldesc">Honestidad, creatividad y lealtad como armadura. Los valores no son opcionales — son el combustible.</div><div class="tlyear">📍 HOY · En progreso</div></div></div>
+    <div class="tlstep"><div class="tldot" style="border-color:#ff6b00;color:#ff6b00">2</div><div class="tlcard"><div class="tltitle">DOMINAR HABILIDADES ÚNICAS</div><div class="tldesc">Programación + música + videojuegos = mente que ningún otro mecánico de F1 tiene.</div><div class="tlyear">📍 2026–2027 · Entrenamiento intensivo</div></div></div>
+    <div class="tlstep"><div class="tldot" style="border-color:#ffc107;color:#ffc107">3</div><div class="tlcard"><div class="tltitle">FORMACIÓN TÉCNICA ESPECIALIZADA</div><div class="tldesc">Mecánica de competición, electrónica, sistemas híbridos F1. Cada certificado es una vuelta rápida.</div><div class="tlyear">📍 2027–2029 · Academia técnica</div></div></div>
+    <div class="tlstep"><div class="tldot" style="border-color:#00ff88;color:#00ff88">4</div><div class="tlcard"><div class="tltitle">PRIMER PIT LANE EN F1</div><div class="tldesc">Ese momento en que tu familia te vea en televisión durante una carrera será el punto de inflexión.</div><div class="tlyear">📍 2029–2032 · La Gran Meta</div></div></div>
+    <div class="tlstep"><div class="tldot" style="border-color:#00e5ff;color:#00e5ff">5</div><div class="tlcard"><div class="tltitle">DEJAR LA HUELLA PERMANENTE</div><div class="tldesc">Tu historia vive en las próximas generaciones. Desde Colombia al más alto nivel del automovilismo mundial.</div><div class="tlyear">📍 LEGADO ETERNO · Para siempre</div></div></div>
   </div>
+  <div class="legacy-quote">"Las huellas que dejas no son las de tus zapatos sino las de tus decisiones. Cada valor que vives, cada línea de código que escribes, cada nota que tocas y cada vuelta en el simulador escribe el legado que tu familia recordará cuando no estés."</div>
+</div>
 
 </div><!-- #app -->
+
+<!-- ACHIEVEMENT POPUP -->
+<div id="overlay"></div>
+<div id="ach-popup">
+  <span id="ach-popup-icon">🏆</span>
+  <div id="ach-popup-title">LOGRO DESBLOQUEADO</div>
+  <div id="ach-popup-name">—</div>
+</div>
 <div id="toast"></div>
+<button class="sound-btn" id="soundBtn" onclick="toggleSound()" title="Sonido">🔊</button>
+<button class="raceday-btn" onclick="toggleRaceDay()" title="Modo Race Day">🏁</button>
 
 <script>
-// ===== STATE =====
-let xp = 340;
-let level = 7;
-let completedQuests = new Set();
-let equippedValues = new Set();
+// ===== AUDIO ENGINE =====
+const AC = typeof AudioContext !== 'undefined' ? new AudioContext() : null;
+let soundOn = true;
+function playTone(freq, dur, type='square', vol=0.15){
+  if(!soundOn || !AC) return;
+  try{
+    const o=AC.createOscillator(), g=AC.createGain();
+    o.connect(g); g.connect(AC.destination);
+    o.type=type; o.frequency.setValueAtTime(freq,AC.currentTime);
+    g.gain.setValueAtTime(vol,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+dur);
+    o.start(); o.stop(AC.currentTime+dur);
+  }catch(e){}
+}
+function playXP(){ playTone(440,.08); setTimeout(()=>playTone(660,.1),80); }
+function playLevelUp(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.15,'sine',0.2),i*120)); }
+function playClick(){ playTone(330,.05,'square',0.08); }
+function playError(){ playTone(150,.2,'sawtooth',0.1); }
+function playSuccess(){ playTone(880,.15,'sine',0.15); setTimeout(()=>playTone(1100,.2,'sine',0.12),100); }
+function playEngine(){ if(!soundOn||!AC) return; [110,220,330].forEach((f,i)=>setTimeout(()=>playTone(f,.08,'sawtooth',0.06),i*30)); }
+function toggleSound(){
+  soundOn=!soundOn;
+  document.getElementById('soundBtn').textContent=soundOn?'🔊':'🔇';
+  if(AC && AC.state==='suspended') AC.resume();
+}
 
-// ===== TRACK BG =====
-(function buildTrack(){
-  const tb = document.getElementById('trackBg');
+// ===== STATE =====
+let xp=340, level=7;
+let completedQuests=new Set(), equippedValues=new Set();
+let ownedItems=new Set(), equippedItems=new Set();
+let unlockedTalents=new Set(), unlockedAchs=new Set();
+let pitBest=[], raceDayMode=false;
+let rivalInterval=null;
+
+const XP_MAX=500, CAR_MIN=4, CAR_MAX=92;
+const STAGES=['INICIO','VALORES 🛡️','SKILLS 🔧','FORMACIÓN 🎓','PADDOCK 🏟️','🏁 F1!'];
+const STAGE_XP=[0,100,200,300,400,500];
+
+// ===== RIVALS DATA =====
+const rivals=[
+  {id:'r1',name:'CARLOS M.',role:'Mecánico España · Junior',xp:420,color:'#ff6b00',icon:'👨‍🔧'},
+  {id:'r2',name:'LUCA B.',role:'Mecánico Italia · Karting',xp:310,color:'#3b82f6',icon:'🧑‍🔧'},
+  {id:'r3',name:'JAMES W.',role:'Mecánico UK · F3',xp:490,color:'#a855f7',icon:'👷'},
+  {id:'r4',name:'YUKI T.',role:'Mecánico Japón · Super Formula',xp:275,color:'#00e5ff',icon:'🧑‍💼'},
+];
+
+// ===== INVENTORY ITEMS =====
+const items=[
+  {id:'casco',icon:'🪖',name:'CASCO DE DATOS',stat:'+10% Análisis',cost:80,effect:'analisis'},
+  {id:'guantes',icon:'🧤',name:'GUANTES PRECISIÓN',stat:'+10% Mecánica',cost:60,effect:'mecanica'},
+  {id:'laptop',icon:'💻',name:'LAPTOP PRO',stat:'+15% Programación',cost:100,effect:'prog'},
+  {id:'auriculares',icon:'🎧',name:'AURICULARES F1',stat:'+12% Música',cost:70,effect:'musica'},
+  {id:'sim',icon:'🕹️',name:'SIMULADOR F1',stat:'+18% Gaming',cost:120,effect:'games'},
+  {id:'libro',icon:'📖',name:'MANUAL TÉCNICO',stat:'+8% Todo',cost:50,effect:'all'},
+];
+
+// ===== TALENTS =====
+const talents=[
+  {id:'t1',icon:'⚙️',name:'ESPECIALISTA MOTOR',desc:'Enfoque total en propulsión híbrida. Desbloquea rutas a Mercedes AMG HPP.',cost:80,color:'#ff2d2d',req:null},
+  {id:'t2',icon:'📡',name:'ANALISTA DE DATOS',desc:'Telemetría avanzada. Herramienta de simulación exclusiva desbloqueada.',cost:80,color:'#00e5ff',req:null},
+  {id:'t3',icon:'🔩',name:'MECÁNICO CHASIS',desc:'Suspensión, aerodinámica, setup. La vía rápida al trabajo en pista.',cost:80,color:'#a855f7',req:'t1'},
+  {id:'t4',icon:'🧪',name:'INGENIERO COMPUESTOS',desc:'Neumáticos, frenos, materiales. Especialización en Pirelli / Brembo.',cost:80,color:'#ffc107',req:'t1'},
+  {id:'t5',icon:'💾',name:'DEV HERRAMIENTAS',desc:'Crear software interno para el equipo. Combina código + mecánica.',cost:100,color:'#00ff88',req:'t2'},
+  {id:'t6',icon:'🏎️',name:'JEFE DE MECÁNICOS',desc:'Coordinar pit stops y estrategia. El camino al campeonato.',cost:150,color:'#ff6b00',req:'t3'},
+];
+
+// ===== ACHIEVEMENTS =====
+const achievements=[
+  {id:'a1',icon:'🏁',name:'PRIMERA VUELTA',desc:'Gana tus primeros 50 XP',unlocked:false},
+  {id:'a2',icon:'⚡',name:'TURBO BOOST',desc:'Completa 3 misiones',unlocked:false},
+  {id:'a3',icon:'🛡️',name:'CÓDIGO DE HONOR',desc:'Equipa los 3 valores',unlocked:false},
+  {id:'a4',icon:'🔧',name:'MECÁNICO APRENDIZ',desc:'Explora el motor V6',unlocked:false},
+  {id:'a5',icon:'💎',name:'COLECCIONISTA',desc:'Compra 3 items',unlocked:false},
+  {id:'a6',icon:'🎯',name:'DECISIVO',desc:'Toma 3 decisiones',unlocked:false},
+  {id:'a7',icon:'⏱️',name:'PIT PERFECTO',desc:'Completa un pit stop',unlocked:false},
+  {id:'a8',icon:'🌟',name:'TALENTO BRUTO',desc:'Desbloquea un talento',unlocked:false},
+  {id:'a9',icon:'🏆',name:'NIVEL 8',desc:'Sube a nivel 8',unlocked:false},
+  {id:'a10',icon:'🚀',name:'DESTINO CLARO',desc:'Alcanza 400 XP',unlocked:false},
+  {id:'a11',icon:'🥇',name:'LÍDER',desc:'Supera a todos los rivales',unlocked:false},
+  {id:'a12',icon:'🎭',name:'NARRADOR',desc:'Lee todas las decisiones',unlocked:false},
+];
+
+// ===== DECISIONS =====
+const decisions=[
+  {
+    id:'d1',badge:'SEMANA 1',q:'¿Estudias mecánica esta semana o practicas en el simulador?',ctx:'Tienes 10 horas libres. El curso de mecánica de competición online cuesta 8 horas. El simulador de F1 ya está instalado.',
+    choices:[
+      {label:'ESTUDIA MECÁNICA',text:'Completar el módulo de suspensiones doble-wishbone',hint:'⏱ 8 horas · +35 XP mecánica',good:true,xp:35,result:{title:'✅ DECISIÓN CORRECTA',text:'Aprendiste los fundamentos de suspensiones que usa el 90% de los autos de F1. Tu mecánico jefe nota el progreso. +35 XP + nuevo conocimiento técnico desbloqueado.',type:'good'}},
+      {label:'SOLO EL SIMULADOR',text:'Pasar el fin de semana en iRacing y F1 2024',hint:'⏱ 10 horas · +10 XP gaming',good:false,xp:10,result:{title:'⚠️ OPORTUNIDAD PERDIDA',text:'Tu tiempo de vuelta mejora pero sigues sin saber por qué el carro siente ese underoversteer. Los sim racers sin base técnica raramente llegan al paddock real. +10 XP pero oportunidad perdida.',type:'bad'}},
+    ]
+  },
+  {
+    id:'d2',badge:'MES 1',q:'Un equipo de karting regional te ofrece trabajo gratis. ¿Lo aceptas?',ctx:'Sin pago, pero con acceso al taller. Sacrificas 3 días por semana de tu tiempo libre.',
+    choices:[
+      {label:'ACEPTO EL TRABAJO',text:'Trabajar gratis a cambio de experiencia real en taller de carrera',hint:'⏱ 3 días/semana · +50 XP hands-on',good:true,xp:50,result:{title:'✅ INVERSIÓN INTELIGENTE',text:'En el mundo del automovilismo la experiencia es moneda de cambio. Conoces al mecánico jefe que tiene contactos en GP2. Esto puede abrir la puerta que ningún CV puede abrir. +50 XP + contacto nuevo.',type:'good'}},
+      {label:'RECHAZO · SIN PAGO',text:'No tiene sentido trabajar gratis siendo principiante',hint:'⏱ Tiempo libre · +0 XP real',good:false,xp:0,result:{title:'⚠️ PRINCIPIO COSTOSO',text:'Tienes razón en valorarte, pero en el automovilismo los primeros años son de inversión. Cada mes sin experiencia real es una vuelta de ventaja que le das a tus rivales. 0 XP de experiencia.',type:'bad'}},
+    ]
+  },
+  {
+    id:'d3',badge:'TRIMESTRE 1',q:'¿Usas tu habilidad de programación para crear un proyecto personal de telemetría?',ctx:'Podrías crear un sistema que analice datos de carrera reales. Requiere 3 semanas de desarrollo intenso.',
+    choices:[
+      {label:'CREO EL PROYECTO',text:'Desarrollar sistema de análisis de telemetría con Python y dashboards en tiempo real',hint:'⏱ 3 semanas · +70 XP programación + portafolio',good:true,xp:70,result:{title:'✅ PORTAFOLIO DIFERENCIADOR',text:'Tu proyecto llama la atención en LinkedIn. Un ingeniero de datos de un equipo de Fórmula 2 lo comparte. Este tipo de iniciativa es exactamente lo que los equipos de F1 buscan en candidatos junior. +70 XP.',type:'good'}},
+      {label:'ES DEMASIADO TRABAJO',text:'Me enfoco solo en lo básico por ahora',hint:'⏱ Descanso · +0 XP proyecto',good:false,xp:5,result:{title:'⚠️ ZONA DE CONFORT',text:'Lo básico te mantiene donde estás. El paddock de F1 no busca gente que hace lo mínimo — busca gente que va más allá por pasión. Tus rivales avanzan mientras tú descanso. +5 XP.',type:'bad'}},
+    ]
+  },
+  {
+    id:'d4',badge:'MES 3',q:'Tienes opción de ir a un evento de networking de la industria automotriz en Bogotá. Cuesta $80.000 COP.',
+    ctx:'Hay ingenieros de equipos de F2 y F3, y un ex mecánico de Red Bull dará una charla.',
+    choices:[
+      {label:'VOY AL EVENTO',text:'Invertir el dinero y asistir, preparar mi pitch de 30 segundos',hint:'💰 $80k COP · +45 XP red + contactos',good:true,xp:45,result:{title:'✅ RED EXPANDIDA',text:'Conoces a 3 ingenieros y el ex mecánico de Red Bull te da su email. Una conexión humana vale más que 1000 CVs enviados a formularios. La industria del motorsport funciona por quién conoces. +45 XP.',type:'good'}},
+      {label:'NO VALE LA PENA',text:'Puedo ver el resumen en YouTube después',hint:'💰 $0 · +0 XP red',good:false,xp:0,result:{title:'⚠️ EL PADDOCK ES PEQUEÑO',text:'En el automovilismo todos se conocen. Los que llegan al paddock no lo hacen solo con talento — lo hacen con relaciones. YouTube no te da el email del mecánico de Red Bull. 0 XP de red.',type:'bad'}},
+    ]
+  },
+  {
+    id:'d5',badge:'MES 4',q:'Te ofrecen un trabajo estable como desarrollador de software con buen salario. ¿Lo aceptas?',ctx:'El trabajo es en Bucaramanga, oficina normal, buen sueldo. Pero te alejaría del automovilismo durante meses.',
+    choices:[
+      {label:'RECHAZO Y SIGO MI META',text:'El dinero es tentador pero la F1 es el objetivo',hint:'⏱ Enfoque total · +60 XP determinación',good:true,xp:60,result:{title:'✅ CLARIDAD DE PROPÓSITO',text:'La comodidad es el enemigo del sueño. Rechazas y esa decisión te define. Buscas trabajo part-time en mecánica mientras sigues tu ruta. Tu familia ve tu determinación. +60 XP de carácter.',type:'good'}},
+      {label:'ACEPTO EL TRABAJO',text:'La seguridad económica primero, la F1 puede esperar',hint:'💰 Sueldo estable · -20 XP meta',good:false,xp:-20,result:{title:'⚠️ DESVÍO DE RUTA',text:'El dinero llega y la comodidad también. Pero cada mes en esa oficina es un mes más lejos del paddock. Los sueños no esperan indefinidamente — se enfrian. -20 XP de progreso hacia la meta.',type:'bad'}},
+    ]
+  },
+];
+
+let decisionsDone=new Set();
+let decisionsAnswered=0;
+
+// ===== TRACK BACKGROUND =====
+(function(){
+  const tb=document.getElementById('trackBg');
   for(let i=0;i<12;i++){
-    const l = document.createElement('div');
-    l.className = 'track-line';
-    l.style.left = (5 + i*8.5) + '%';
-    l.style.animationDuration = (2.5 + Math.random()*2) + 's';
-    l.style.animationDelay = (-Math.random()*3) + 's';
-    l.style.opacity = (0.3 + Math.random()*0.4).toString();
+    const l=document.createElement('div');
+    l.className='track-line';
+    l.style.cssText=`left:${5+i*8.5}%;animation-duration:${2.5+Math.random()*2}s;animation-delay:${-Math.random()*3}s;opacity:${0.3+Math.random()*0.3}`;
     tb.appendChild(l);
   }
 })();
 
 // ===== RADAR =====
-(function drawRadar(){
-  const cx=120, cy=110, r=80;
-  const vals = [0.72, 0.55, 0.88, 0.38, 0.65, 0.70];
-  const angles = [270,330,30,90,150,210].map(a=>a*Math.PI/180);
-  const pts = vals.map((v,i)=>{
-    const x = cx + r*v*Math.cos(angles[i]);
-    const y = cy + r*v*Math.sin(angles[i]);
-    return x+','+y;
-  }).join(' ');
-  setTimeout(()=>{
-    document.getElementById('radarPoly').setAttribute('points', pts);
-  }, 600);
+(function(){
+  const cx=120,cy=110,r=80;
+  const v=[0.72,0.55,0.88,0.38,0.65,0.70];
+  const a=[270,330,30,90,150,210].map(d=>d*Math.PI/180);
+  const pts=v.map((vi,i)=>`${cx+r*vi*Math.cos(a[i])},${cy+r*vi*Math.sin(a[i])}`).join(' ');
+  setTimeout(()=>document.getElementById('radarPoly').setAttribute('points',pts),700);
 })();
 
-// ===== XP BAR =====
-setTimeout(()=>{
-  updateXP(0);
-},400);
+// ===== XP / CAR =====
+function getStage(v){let i=0;for(let j=STAGE_XP.length-1;j>=0;j--){if(v>=STAGE_XP[j]){i=j;break;}}return STAGES[i];}
+
+function moveCar(v,boost){
+  const p=Math.min(v/XP_MAX,1);
+  const pos=CAR_MIN+p*(CAR_MAX-CAR_MIN);
+  const w=document.getElementById('carWrap');
+  if(!w)return;
+  w.style.left=pos+'%';
+  document.getElementById('stageLbl').textContent=getStage(v);
+  if(boost){
+    w.classList.remove('boost');
+    void w.offsetWidth;
+    w.classList.add('boost');
+    setTimeout(()=>w.classList.remove('boost'),700);
+    playEngine();
+  }
+  // update rival comparison
+  document.getElementById('myXpRival').textContent=v;
+  document.getElementById('myRivalBar').style.width=(p*100)+'%';
+  updateRivalPositions();
+}
 
 function updateXP(delta){
-  xp += delta;
-  const max = 500;
-  const pct = Math.min(Math.round((xp/max)*100),100);
-  document.getElementById('xpBar').style.width = pct+'%';
-  document.getElementById('xpValLbl').textContent = xp+' / '+max+' XP';
-  document.getElementById('g1').textContent = xp;
-  if(xp >= max && delta > 0){
-    level++;
-    xp = xp - max;
-    document.getElementById('levelNum').textContent = level;
-    setTimeout(()=>showToast('🏁 ¡LEVEL UP! Ahora eres Nivel '+level), 900);
+  xp+=delta;
+  const p=Math.min(Math.round((xp/XP_MAX)*100),100);
+  document.getElementById('xpBar').style.width=p+'%';
+  document.getElementById('xpLbl').textContent=xp+' / '+XP_MAX+' XP';
+  document.getElementById('g-xp').textContent=xp;
+  moveCar(xp,delta>0);
+  checkAchievements();
+  if(delta>0) playXP();
+  if(xp>=XP_MAX && delta>0){
+    level++; xp=xp-XP_MAX;
+    document.getElementById('lvlNum').textContent=level;
+    playLevelUp();
+    showLevelUpBurst();
+    showToast('🏁 ¡LEVEL UP! Ahora eres Nivel '+level);
+    unlockAch('a9');
   }
+}
+
+function showLevelUpBurst(){
+  const el=document.createElement('div');
+  el.className='levelup-burst'; el.textContent='⬆️';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),800);
 }
 
 // ===== TABS =====
+const TABS=['stats','valores','motor','decisiones','metas','inventario','pitstop','talentos','rivales','logros','destino'];
 function showTab(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const tabs=['stats','valores','engine','metas','destino'];
-  document.querySelectorAll('.nav-btn')[tabs.indexOf(id)].classList.add('active');
-
-  // Animate bars on stats screen
-  if(id==='stats'){
-    setTimeout(()=>{
-      document.querySelectorAll('.stat-bar').forEach(b=>{
-        const w = b.style.width;
-        b.style.width='0%';
-        setTimeout(()=>{ b.style.width=w; },50);
-      });
-    },100);
-  }
-  // Animate value bars
-  if(id==='valores'){
-    setTimeout(()=>{
-      document.querySelectorAll('.val-xp-bar').forEach(b=>{
-        const w = b.dataset.w+'%';
-        b.style.width='0%';
-        setTimeout(()=>{ b.style.width=w; },50);
-      });
-    },100);
-  }
+  const i=TABS.indexOf(id);
+  if(i>=0) document.querySelectorAll('.nbtn')[i].classList.add('active');
+  playClick();
+  if(id==='valores') setTimeout(()=>document.querySelectorAll('.vbar').forEach(b=>{const w=b.dataset.w+'%';b.style.width='0%';setTimeout(()=>b.style.width=w,50)}),100);
+  if(id==='decisiones') renderDecisions();
+  if(id==='inventario') renderInventory();
+  if(id==='talentos') renderTalents();
+  if(id==='rivales') renderRivals();
+  if(id==='logros') renderAchs();
+  if(id==='pitstop') renderPitBoard();
 }
 
 // ===== VALUES =====
-function fireValue(el, key, amount){
-  const btn = el.querySelector('.equip-btn');
-  if(equippedValues.has(key)){
-    showToast('⚡ '+key.toUpperCase()+' ya está equipado');
-    return;
-  }
+function fireValue(el,key,amt){
+  if(equippedValues.has(key)){showToast('⚡ '+key.toUpperCase()+' ya equipado');return;}
   equippedValues.add(key);
-  btn.textContent = 'ACTIVO';
-  btn.classList.add('equipped');
+  el.querySelector('.eqbtn').textContent='ACTIVO';
+  el.querySelector('.eqbtn').classList.add('on');
   el.classList.add('fired');
-  el.style.animation='pulse 0.4s ease';
-  setTimeout(()=>el.style.animation='',500);
-  updateXP(amount);
-  const cnt = equippedValues.size;
-  document.getElementById('g4').textContent = cnt;
-  showToast('🛡️ '+key.toUpperCase()+' EQUIPADO · +'+amount+' XP');
+  el.style.animation='fadeSlide .3s ease';
+  updateXP(amt);
+  document.getElementById('g-ach').textContent=unlockedAchs.size;
+  showToast('🛡️ '+key.toUpperCase()+' EQUIPADO · +'+amt+' XP');
+  if(equippedValues.size>=3) unlockAch('a3');
 }
 
-// ===== ENGINE SKILL TREE =====
-const skills = {
-  prog:     { icon:'💻', name:'PROGRAMACIÓN',       lvl:'Nivel 6', xp:720,  max:1000, pct:72, desc:'Tu habilidad técnica es la base de todo. Python, análisis de datos, telemetría — cada línea de código te acerca al pit lane de la F1.' },
-  analisis: { icon:'🧠', name:'ANÁLISIS DE DATOS',  lvl:'Nivel 5', xp:550,  max:1000, pct:55, desc:'La F1 es el deporte más data-driven del mundo. Tu capacidad de análisis te permite leer los datos de carrera como un libro.' },
-  lealtad:  { icon:'🔰', name:'LEALTAD / TRABAJO EN EQUIPO', lvl:'Nivel 7', xp:820, max:1000, pct:82, desc:'En el pit lane los 20 mecánicos deben actuar como un solo organismo. Tu lealtad y compromiso con el equipo son tu activo más valioso.' },
-  musica:   { icon:'🎵', name:'MÚSICA / OÍDO',       lvl:'Nivel 5', xp:500,  max:1000, pct:50, desc:'Escuchar un motor y detectar una anomalía es un arte. Tu entrenamiento musical agudiza un sentido que muy pocos mecánicos tienen.' },
-  games:    { icon:'🎮', name:'VIDEOJUEGOS / SIM',   lvl:'Nivel 7', xp:880,  max:1000, pct:88, desc:'Sim racing, estrategia, reflejos bajo presión — los equipos de F1 ya usan simuladores como herramientas de trabajo reales.' },
-  mecanica: { icon:'🏎️', name:'MECÁNICA F1',         lvl:'Nivel 3', xp:280,  max:1000, pct:28, desc:'La habilidad en construcción. Aún en desarrollo, pero cada día que entrenas suma. Este nodo se ilumina completamente cuando llegues al paddock.' },
+// ===== ENGINE SKILL =====
+const skillData={
+  prog:{icon:'💻',name:'PROGRAMACIÓN',lvl:'Nivel 6',xp:720,max:1000,pct:72,desc:'Python, análisis de datos, telemetría — cada línea de código te acerca al pit lane de la F1.'},
+  analisis:{icon:'🧠',name:'ANÁLISIS DE DATOS',lvl:'Nivel 5',xp:550,max:1000,pct:55,desc:'La F1 es el deporte más data-driven del mundo. Tu capacidad analítica es una ventaja diferencial.'},
+  lealtad:{icon:'🔰',name:'LEALTAD/EQUIPO',lvl:'Nivel 7',xp:820,max:1000,pct:82,desc:'En el pit lane los 20 mecánicos deben actuar como uno. Tu lealtad y compromiso son tu activo más valioso.'},
+  musica:{icon:'🎵',name:'MÚSICA/OÍDO',lvl:'Nivel 5',xp:500,max:1000,pct:50,desc:'Escuchar un motor y detectar anomalías es un arte. Tu entrenamiento musical agudiza un sentido único.'},
+  games:{icon:'🎮',name:'VIDEOJUEGOS/SIM',lvl:'Nivel 7',xp:880,max:1000,pct:88,desc:'Sim racing, estrategia bajo presión, reflejos — los equipos de F1 ya usan simuladores en su trabajo real.'},
+  mecanica:{icon:'🏎️',name:'MECÁNICA F1',lvl:'Nivel 3',xp:280,max:1000,pct:28,desc:'La habilidad en construcción. Cada día que entrenas suma. Este nodo se ilumina cuando llegues al paddock.'},
 };
-
-let activeSkill = null;
+let activeSkill=null;
 function selectSkill(id){
-  const sk = skills[id];
-  if(!sk) return;
-  // Toggle
-  if(activeSkill === id){
-    document.getElementById('skillPanel').classList.remove('open');
-    document.getElementById('node-'+id)?.querySelector('circle')?.setAttribute('filter','');
-    activeSkill = null;
-    return;
-  }
-  // Deactivate previous
-  if(activeSkill) document.getElementById('node-'+activeSkill)?.querySelector('circle')?.setAttribute('filter','');
-  activeSkill = id;
-  document.getElementById('node-'+id)?.querySelector('circle')?.setAttribute('filter','url(#glow-red)');
-
-  document.getElementById('sipIcon').textContent = sk.icon;
-  document.getElementById('sipName').textContent = sk.name;
-  document.getElementById('sipLvl').textContent = sk.lvl+' · '+sk.xp+' / '+sk.max+' XP';
-  document.getElementById('sipDesc').textContent = sk.desc;
-  document.getElementById('sipXp').textContent = sk.xp+' / '+sk.max+' XP';
-  const bar = document.getElementById('sipBar');
-  bar.style.width='0%';
-  setTimeout(()=>{ bar.style.width=sk.pct+'%'; },50);
-  document.getElementById('skillPanel').classList.add('open');
-  updateXP(10);
+  const sk=skillData[id]; if(!sk)return;
+  if(activeSkill===id){document.getElementById('sipPanel').classList.remove('open');activeSkill=null;return;}
+  activeSkill=id;
+  document.getElementById('sipIcon').textContent=sk.icon;
+  document.getElementById('sipName').textContent=sk.name;
+  document.getElementById('sipLvl').textContent=sk.lvl+' · '+sk.xp+' / '+sk.max+' XP';
+  document.getElementById('sipDesc').textContent=sk.desc;
+  document.getElementById('sipXp').textContent=sk.xp+' / '+sk.max+' XP';
+  const b=document.getElementById('sipBar');b.style.width='0%';setTimeout(()=>b.style.width=sk.pct+'%',60);
+  document.getElementById('sipPanel').classList.add('open');
+  updateXP(10); unlockAch('a4');
   showToast('🔧 '+sk.name+' · +10 XP');
 }
 
+// ===== DECISIONS =====
+function renderDecisions(){
+  const c=document.getElementById('decContainer'); c.innerHTML='';
+  decisions.forEach(d=>{
+    const done=decisionsDone.has(d.id);
+    const div=document.createElement('div');
+    div.className='dec-scene';
+    div.innerHTML=`
+      <div class="dec-badge">🎭 DECISIÓN · ${d.badge}</div>
+      <div class="dec-question">${d.q}</div>
+      <div class="dec-context">${d.ctx}</div>
+      ${done?`<div class="dec-done">✅ DECISIÓN TOMADA — XP GANADO</div>`:
+      `<div class="dec-choices">
+        ${d.choices.map((ch,ci)=>`
+          <button class="dec-btn ${ch.good?'good':'bad'}" onclick="makeDecision('${d.id}',${ci})">
+            <div class="dec-btn-label">${ch.good?'✅':'⚠️'} OPCIÓN ${ci===0?'A':'B'} — ${ch.label}</div>
+            <div class="dec-btn-text">${ch.text}</div>
+            <div class="dec-btn-hint">${ch.hint}</div>
+          </button>`).join('')}
+      </div>`}
+      <div class="dec-result" id="dres-${d.id}"></div>
+    `;
+    c.appendChild(div);
+  });
+  if(decisionsAnswered>=decisions.length){
+    const rf=document.createElement('div');
+    rf.style='text-align:center;padding:10px 0';
+    rf.innerHTML=`<button class="dec-refresh" onclick="resetDecisions()">🔄 NUEVA TEMPORADA — REPETIR DECISIONES</button>`;
+    c.appendChild(rf);
+  }
+}
+
+function makeDecision(did, choiceIdx){
+  if(decisionsDone.has(did)) return;
+  decisionsDone.add(did);
+  decisionsAnswered++;
+  const d=decisions.find(x=>x.id===did);
+  const ch=d.choices[choiceIdx];
+  if(ch.xp>0) updateXP(ch.xp);
+  else if(ch.xp<0){ xp=Math.max(0,xp+ch.xp); document.getElementById('xpBar').style.width=Math.min(Math.round((xp/XP_MAX)*100),100)+'%'; document.getElementById('xpLbl').textContent=xp+' / '+XP_MAX+' XP'; }
+  const res=document.getElementById('dres-'+did);
+  res.className='dec-result show '+(ch.result.type==='good'?'good-r':'bad-r');
+  res.innerHTML=`<div class="dec-result-title" style="color:${ch.result.type==='good'?'var(--green)':'var(--red2)'}">${ch.result.title}</div><div class="dec-result-text">${ch.result.text}</div><div class="dec-result-xp" style="color:${ch.xp>=0?'var(--green)':'var(--red2)'}">${ch.xp>0?'+ '+ch.xp+' XP GANADO':ch.xp<0?ch.xp+' XP PERDIDO':'Sin XP esta vez'}</div>`;
+  if(ch.result.type==='good') playSuccess(); else playError();
+  renderDecisions();
+  if(decisionsAnswered>=3) unlockAch('a6');
+  showToast(ch.result.type==='good'?'✅ ¡Buena decisión! +'+ch.xp+' XP':'⚠️ Decisión arriesgada');
+}
+
+function resetDecisions(){
+  decisionsDone.clear(); decisionsAnswered=0; renderDecisions();
+}
+
 // ===== QUESTS =====
-function completeQuest(id, amount){
-  if(completedQuests.has(id)){ showToast('✓ Misión ya completada'); return; }
+function completeQuest(id,amt){
+  if(completedQuests.has(id)){showToast('✓ Misión ya completada');return;}
   completedQuests.add(id);
-  const card = document.getElementById(id);
-  const btn  = card.querySelector('.check-btn');
-  card.classList.add('done-card');
-  btn.classList.add('done-btn');
-  btn.textContent = '✓';
-  updateXP(amount);
-  document.getElementById('g2').textContent = completedQuests.size;
-  showToast('🏁 MISIÓN COMPLETADA · +'+amount+' XP');
+  const card=document.getElementById(id);
+  const btn=card.querySelector('.cbtn');
+  card.classList.add('done-c'); btn.classList.add('done-btn');
+  updateXP(amt);
+  document.getElementById('g-q').textContent=completedQuests.size;
+  playSuccess();
+  showToast('🏁 MISIÓN COMPLETADA · +'+amt+' XP');
+  if(completedQuests.size>=3) unlockAch('a2');
+}
+
+// ===== INVENTORY =====
+function renderInventory(){
+  const g=document.getElementById('invGrid'); g.innerHTML='';
+  items.forEach(item=>{
+    const owned=ownedItems.has(item.id), eq=equippedItems.has(item.id);
+    const div=document.createElement('div');
+    div.className='item-card'+(owned?' owned':'')+(eq?' equipped-item':'');
+    div.onclick=()=>buyOrEquip(item.id);
+    div.innerHTML=`<span class="item-icon">${item.icon}</span><div class="item-name">${item.name}</div><div class="item-stat">${item.stat}</div><div class="item-cost ${owned?'owned':''}">${owned?'EQUIPAR':'⭐ '+item.cost+' XP'}</div>`;
+    g.appendChild(div);
+  });
+  document.getElementById('inv-hint').textContent=ownedItems.size>0?`Items comprados: ${ownedItems.size} · Items equipados: ${equippedItems.size}`:'TOCA UN ÍTEM PARA COMPRAR/EQUIPAR — COSTO EN XP';
+}
+
+function buyOrEquip(id){
+  const item=items.find(i=>i.id===id);
+  if(ownedItems.has(id)){
+    if(equippedItems.has(id)){ equippedItems.delete(id); showToast('📦 '+item.name+' desequipado'); }
+    else{ equippedItems.add(id); showToast('⚡ '+item.name+' EQUIPADO'); updateXP(5); }
+    document.getElementById('g-inv').textContent=equippedItems.size;
+  } else {
+    if(xp<item.cost){ playError(); showToast('⛔ XP insuficiente · Necesitas '+item.cost+' XP'); return; }
+    updateXP(-item.cost); ownedItems.add(id);
+    document.getElementById('g-inv').textContent=ownedItems.size;
+    showToast('🎒 '+item.name+' COMPRADO'); playSuccess();
+    if(ownedItems.size>=3) unlockAch('a5');
+  }
+  renderInventory();
+}
+
+// ===== PIT STOP MINIGAME =====
+const PIT_KEYS=['R','L','R','L','F','F','R','L'];
+let pitState={running:false,seq:[],idx:0,startTime:0,interval:null,done:false};
+
+function renderPitBoard(){
+  const rows=document.getElementById('pitBoardRows');
+  if(pitBest.length===0){rows.innerHTML='<div style="font-size:10px;color:var(--text3);text-align:center;padding:8px;font-family:var(--hud)">SIN TIEMPOS AÚN</div>';return;}
+  rows.innerHTML=pitBest.slice(0,5).map((t,i)=>`<div class="pit-board-row"><span class="pit-board-pos">P${i+1}</span><span>${i===0?'👑':''} ${t.xp} XP</span><span class="pit-board-time">${t.time}s</span></div>`).join('');
+}
+
+function startPit(){
+  if(pitState.running) return;
+  if(AC && AC.state==='suspended') AC.resume();
+  const seq=PIT_KEYS.map(()=>{const ks=['◀','▶','🔺','🔻'];return ks[Math.floor(Math.random()*ks.length)]});
+  pitState={running:true,seq,idx:0,startTime:Date.now(),done:false};
+  const seqEl=document.getElementById('pitSeq');
+  seqEl.innerHTML=seq.map((k,i)=>`<div class="pit-key" id="pk${i}">${k}</div>`).join('');
+  document.getElementById('pitStart').disabled=true;
+  document.getElementById('pitResult').textContent='';
+  document.getElementById('pk0').classList.add('active-k');
+  let t=3.0;
+  document.getElementById('pitTimer').textContent=t.toFixed(1);
+  document.getElementById('pitTimer').classList.add('go');
+  pitState.interval=setInterval(()=>{
+    t-=0.1;
+    if(t<=0){clearInterval(pitState.interval);pitFail('⏰ TIEMPO AGOTADO');return;}
+    document.getElementById('pitTimer').textContent=t.toFixed(1);
+  },100);
+  document.addEventListener('keydown',pitKeyHandler);
+  seqEl.querySelectorAll('.pit-key').forEach((k,i)=>k.onclick=()=>pitTap(i));
+}
+
+function pitKeyHandler(e){
+  const map={'ArrowLeft':'◀','ArrowRight':'▶','ArrowUp':'🔺','ArrowDown':'🔻'};
+  const k=map[e.key]; if(!k||!pitState.running) return;
+  const cur=pitState.seq[pitState.idx];
+  if(k===cur) pitAdvance(); else pitFail('❌ SECUENCIA INCORRECTA');
+}
+
+function pitTap(i){
+  if(!pitState.running||i!==pitState.idx) return;
+  pitAdvance();
+}
+
+function pitAdvance(){
+  const pk=document.getElementById('pk'+pitState.idx);
+  if(pk){pk.classList.remove('active-k');pk.classList.add('done-k');}
+  playTone(440+pitState.idx*80,.06,'sine',0.12);
+  pitState.idx++;
+  if(pitState.idx>=pitState.seq.length){
+    clearInterval(pitState.interval);
+    document.removeEventListener('keydown',pitKeyHandler);
+    const elapsed=((Date.now()-pitState.startTime)/1000).toFixed(2);
+    const xpEarned=elapsed<1.5?80:elapsed<2.5?50:25;
+    pitBest.push({time:elapsed,xp:xpEarned});
+    pitBest.sort((a,b)=>a.time-b.time);
+    document.getElementById('pitTimer').textContent=elapsed+'s';
+    document.getElementById('pitTimer').classList.remove('go');
+    document.getElementById('pitResult').textContent=`🏎️ TIEMPO: ${elapsed}s · +${xpEarned} XP`;
+    document.getElementById('pitResult').style.color='var(--green)';
+    document.getElementById('pitStart').disabled=false;
+    pitState.running=false;
+    updateXP(xpEarned); playSuccess();
+    unlockAch('a7'); renderPitBoard();
+    showToast(`⏱️ PIT STOP ${elapsed}s · +${xpEarned} XP`);
+  } else {
+    document.getElementById('pk'+pitState.idx).classList.add('active-k');
+  }
+}
+
+function pitFail(msg){
+  clearInterval(pitState.interval);
+  document.removeEventListener('keydown',pitKeyHandler);
+  pitState.running=false;
+  document.getElementById('pitTimer').classList.remove('go');
+  document.getElementById('pitResult').textContent=msg+' · 0 XP';
+  document.getElementById('pitResult').style.color='var(--red2)';
+  document.getElementById('pitStart').disabled=false;
+  document.querySelectorAll('.pit-key').forEach(k=>k.classList.remove('active-k'));
+  playError();
+  showToast('❌ PIT STOP FALLIDO');
+}
+
+// ===== TALENTS =====
+function renderTalents(){
+  const g=document.getElementById('talentGrid'); g.innerHTML='';
+  talents.forEach(t=>{
+    const unlocked=unlockedTalents.has(t.id);
+    const reqOk=!t.req||unlockedTalents.has(t.req);
+    const canAfford=xp>=t.cost;
+    const locked=!reqOk;
+    const div=document.createElement('div');
+    div.className='talent-card'+(unlocked?' unlocked-t':locked?' locked-t':'');
+    div.style.setProperty('--tc',t.color);
+    div.onclick=()=>buyTalent(t.id);
+    div.innerHTML=`<span class="ticon">${t.icon}</span><div class="tname">${t.name}</div><div class="tdesc">${t.desc}</div><div class="tcost ${unlocked?'done':canAfford&&!locked?'can':'cant'}">${unlocked?'✅ DESBLOQUEADO':locked?'🔒 REQUIERE '+t.req:'⭐ '+t.cost+' XP'}</div>${t.req&&!unlocked?`<div class="treq">Requiere: ${talents.find(x=>x.id===t.req)?.name||t.req}</div>`:''}`;
+    g.appendChild(div);
+  });
+}
+
+function buyTalent(id){
+  const t=talents.find(x=>x.id===id);
+  if(unlockedTalents.has(id)){showToast('✅ Talento ya desbloqueado');return;}
+  if(t.req&&!unlockedTalents.has(t.req)){playError();showToast('🔒 Desbloquea "'+talents.find(x=>x.id===t.req)?.name+'" primero');return;}
+  if(xp<t.cost){playError();showToast('⛔ XP insuficiente · Necesitas '+t.cost+' XP');return;}
+  updateXP(-t.cost); unlockedTalents.add(id);
+  playSuccess(); showToast('🌟 TALENTO DESBLOQUEADO: '+t.name);
+  unlockAch('a8'); renderTalents();
+}
+
+// ===== RIVALS =====
+function renderRivals(){
+  const c=document.getElementById('rivalList'); c.innerHTML='';
+  const all=[{id:'me',xp,name:'TÚ'},...rivals];
+  const sorted=[...rivals].sort((a,b)=>b.xp-a.xp);
+  const myRank=sorted.filter(r=>r.xp>xp).length+1;
+  document.getElementById('myPosNum').textContent='P'+myRank;
+  sorted.forEach((r,i)=>{
+    const gap=r.xp-xp;
+    const div=document.createElement('div');
+    div.className='rival-card';
+    div.innerHTML=`
+      <div class="rival-pos">${i+1}</div>
+      <div class="rival-avatar" style="border-color:${r.color}">${r.icon}</div>
+      <div class="rival-info">
+        <div class="rival-name">${r.name}</div>
+        <div class="rival-role">${r.role}</div>
+        <div class="rival-bw"><div class="rival-bf" style="width:${Math.min(r.xp/XP_MAX*100,100)}%;background:${r.color}"></div></div>
+        <div class="rival-gap ${gap>0?'ahead':'behind'}">${gap>0?'▲ '+gap+' XP por delante':'▼ '+Math.abs(gap)+' XP detrás'}</div>
+      </div>
+      <div style="font-family:var(--hud);font-size:11px;color:var(--text3)">${r.xp} XP</div>`;
+    c.appendChild(div);
+  });
+  // Rivals auto-advance
+  if(!rivalInterval){
+    rivalInterval=setInterval(()=>{
+      rivals.forEach(r=>{ r.xp+=Math.floor(Math.random()*4); });
+      if(document.getElementById('rivales').classList.contains('active')) renderRivals();
+    },4000);
+  }
+}
+
+function updateRivalPositions(){
+  const myRank=[...rivals].filter(r=>r.xp>xp).length+1;
+  if(myRank===1) unlockAch('a11');
+}
+
+// ===== ACHIEVEMENTS =====
+function renderAchs(){
+  const g=document.getElementById('achGrid'); g.innerHTML='';
+  achievements.forEach(a=>{
+    const div=document.createElement('div');
+    div.className='ach-card'+(a.unlocked?' unlocked-a':' locked-a');
+    div.innerHTML=`<span class="ach-icon">${a.icon}</span><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div>`;
+    g.appendChild(div);
+  });
+}
+
+function unlockAch(id){
+  const a=achievements.find(x=>x.id===id);
+  if(!a||a.unlocked) return;
+  a.unlocked=true; unlockedAchs.add(id);
+  document.getElementById('g-ach').textContent=unlockedAchs.size;
+  showAchPopup(a);
+  playLevelUp();
+  if(document.getElementById('logros').classList.contains('active')) renderAchs();
+}
+
+function showAchPopup(a){
+  document.getElementById('ach-popup-icon').textContent=a.icon;
+  document.getElementById('ach-popup-name').textContent=a.name;
+  const pop=document.getElementById('ach-popup');
+  const ov=document.getElementById('overlay');
+  pop.classList.add('show'); ov.classList.add('show');
+  setTimeout(()=>{pop.classList.remove('show');ov.classList.remove('show');},2200);
+}
+
+function checkAchievements(){
+  if(xp>=50) unlockAch('a1');
+  if(xp>=400) unlockAch('a10');
+}
+
+// ===== RACE DAY MODE =====
+function toggleRaceDay(){
+  raceDayMode=!raceDayMode;
+  document.body.classList.toggle('race-day',raceDayMode);
+  document.querySelector('.raceday-btn').textContent=raceDayMode?'🌙':'🏁';
+  showToast(raceDayMode?'🏁 RACE DAY MODE ACTIVADO':'🌙 Modo normal');
+  if(raceDayMode) playLevelUp();
 }
 
 // ===== TOAST =====
 function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(()=>t.classList.remove('show'), 2800);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),2800);
 }
 
 // ===== INIT =====
-window.addEventListener('load', ()=>{
-  setTimeout(()=>updateXP(0), 500);
+window.addEventListener('load',()=>{
+  setTimeout(()=>{updateXP(0);},500);
+  // Nav scroll horizontal
+  const nav=document.querySelector('.nav');
+  nav.style.overflowX='auto';
+  nav.style.scrollbarWidth='none';
+  nav.style.webkitOverflowScrolling='touch';
 });
 </script>
 </body>
